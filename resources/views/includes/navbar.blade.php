@@ -11,14 +11,10 @@
         <nav class="navbar navbar-expand-lg navbar-light p-0">
             <div class="iq-search-bar">
                 <form action="#" class="searchbox">
-                    <input type="text" class="text search-input" placeholder="Type here to search...">
+                    <input type="text" class="text search-input" placeholder="Cari file anda">
                     <a class="search-link" href="#"><i class="ri-search-line"></i></a>
                 </form>
             </div>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="ri-menu-3-line"></i>
-            </button>
             <div class="iq-menu-bt align-self-center">
                 <div class="wrapper-menu">
                     <div class="main-circle"><i class="ri-more-fill"></i></div>
@@ -27,182 +23,27 @@
             </div>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto navbar-list">
-                    <li class="nav-item">
-                        <a class="search-toggle iq-waves-effect language-title" href="#"><img
-                                src="images/small/flag-01.png" alt="img-flaf" class="img-fluid mr-1"
-                                style="height: 16px; width: 16px;" /> English <i class="ri-arrow-down-s-line"></i></a>
-                        <div class="iq-sub-dropdown">
-                            <a class="iq-sub-card" href="#"><img src="images/small/flag-02.png" alt="img-flaf"
-                                    class="img-fluid mr-2" />French</a>
-                            <a class="iq-sub-card" href="#"><img src="images/small/flag-03.png" alt="img-flaf"
-                                    class="img-fluid mr-2" />Spanish</a>
-                            <a class="iq-sub-card" href="#"><img src="images/small/flag-04.png" alt="img-flaf"
-                                    class="img-fluid mr-2" />Italian</a>
-                            <a class="iq-sub-card" href="#"><img src="images/small/flag-05.png" alt="img-flaf"
-                                    class="img-fluid mr-2" />German</a>
-                            <a class="iq-sub-card" href="#"><img src="images/small/flag-06.png" alt="img-flaf"
-                                    class="img-fluid mr-2" />Japanese</a>
-
-                        </div>
-                    </li>
-                    <li class="nav-item iq-full-screen">
+                    <li class="nav-item iq-full-scree   n">
                         <a href="#" class="iq-waves-effect" id="btnFullscreen"><i class="ri-fullscreen-line"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="search-toggle iq-waves-effect">
-                            <i class="ri-notification-3-fill"></i>
-                            <span class="bg-danger dots"></span>
-                        </a>
-                        <div class="iq-sub-dropdown">
-                            <div class="iq-card shadow-none m-0">
-                                <div class="iq-card-body p-0 ">
-                                    <div class="bg-primary p-3">
-                                        <h5 class="mb-0 text-white">All Notifications<small
-                                                class="badge  badge-light float-right pt-1">4</small></h5>
-                                    </div>
-
-                                    <a href="#" class="iq-sub-card">
-                                        <div class="media align-items-center">
-                                            <div class="">
-                                                <img class="avatar-40 rounded" src="images/user/01.jpg" alt="">
-                                            </div>
-                                            <div class="media-body ml-3">
-                                                <h6 class="mb-0 ">Emma Watson Bini</h6>
-                                                <small class="float-right font-size-12">Just Now</small>
-                                                <p class="mb-0">95 MB</p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="iq-sub-card">
-                                        <div class="media align-items-center">
-                                            <div class="">
-                                                <img class="avatar-40 rounded" src="images/user/02.jpg" alt="">
-                                            </div>
-                                            <div class="media-body ml-3">
-                                                <h6 class="mb-0 ">New customer is join</h6>
-                                                <small class="float-right font-size-12">5 days ago</small>
-                                                <p class="mb-0">Jond Bini</p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="iq-sub-card">
-                                        <div class="media align-items-center">
-                                            <div class="">
-                                                <img class="avatar-40 rounded" src="images/user/03.jpg" alt="">
-                                            </div>
-                                            <div class="media-body ml-3">
-                                                <h6 class="mb-0 ">Two customer is left</h6>
-                                                <small class="float-right font-size-12">2 days ago</small>
-                                                <p class="mb-0">Jond Bini</p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="iq-sub-card">
-                                        <div class="media align-items-center">
-                                            <div class="">
-                                                <img class="avatar-40 rounded" src="images/user/04.jpg" alt="">
-                                            </div>
-                                            <div class="media-body ml-3">
-                                                <h6 class="mb-0 ">New Mail from Fenny</h6>
-                                                <small class="float-right font-size-12">3 days ago</small>
-                                                <p class="mb-0">Jond Bini</p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a href="#" class="search-toggle iq-waves-effect">
-                            <i class="ri-mail-open-fill"></i>
-                            <span class="bg-primary count-mail"></span>
-                        </a>
-                        <div class="iq-sub-dropdown">
-                            <div class="iq-card shadow-none m-0">
-                                <div class="iq-card-body p-0 ">
-                                    <div class="bg-primary p-3">
-                                        <h5 class="mb-0 text-white">All Messages<small
-                                                class="badge  badge-light float-right pt-1">5</small></h5>
-                                    </div>
-                                    <a href="#" class="iq-sub-card">
-                                        <div class="media align-items-center">
-                                            <div class="">
-                                                <img class="avatar-40 rounded" src="images/user/01.jpg" alt="">
-                                            </div>
-                                            <div class="media-body ml-3">
-                                                <h6 class="mb-0 ">Bini Emma Watson</h6>
-                                                <small class="float-left font-size-12">13 Jun</small>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="iq-sub-card">
-                                        <div class="media align-items-center">
-                                            <div class="">
-                                                <img class="avatar-40 rounded" src="images/user/02.jpg" alt="">
-                                            </div>
-                                            <div class="media-body ml-3">
-                                                <h6 class="mb-0 ">Lorem Ipsum Watson</h6>
-                                                <small class="float-left font-size-12">20 Apr</small>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="iq-sub-card">
-                                        <div class="media align-items-center">
-                                            <div class="">
-                                                <img class="avatar-40 rounded" src="images/user/03.jpg" alt="">
-                                            </div>
-                                            <div class="media-body ml-3">
-                                                <h6 class="mb-0 ">Why do we use it?</h6>
-                                                <small class="float-left font-size-12">30 Jun</small>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="iq-sub-card">
-                                        <div class="media align-items-center">
-                                            <div class="">
-                                                <img class="avatar-40 rounded" src="images/user/04.jpg" alt="">
-                                            </div>
-                                            <div class="media-body ml-3">
-                                                <h6 class="mb-0 ">Variations Passages</h6>
-                                                <small class="float-left font-size-12">12 Sep</small>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="iq-sub-card">
-                                        <div class="media align-items-center">
-                                            <div class="">
-                                                <img class="avatar-40 rounded" src="images/user/05.jpg" alt="">
-                                            </div>
-                                            <div class="media-body ml-3">
-                                                <h6 class="mb-0 ">Lorem Ipsum generators</h6>
-                                                <small class="float-left font-size-12">5 Dec</small>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
                     </li>
                 </ul>
             </div>
             <ul class="navbar-list">
                 <li>
                     <a href="#" class="search-toggle iq-waves-effect d-flex align-items-center">
-                        <img src="images/user/1.jpg" class="img-fluid rounded mr-3" alt="user">
+                        <img style="margin-right: 10px;" src="{{ Auth::user()->picture }}" width="40"
+                            class="rounded-circle">
                         <div class="caption">
-                            <h6 class="mb-0 line-height">Bini Jets</h6>
-                            <span class="font-size-12">Available</span>
+                            <h6 class="mb-0 line-height"> {{ Auth::user()->name }}</h6>
                         </div>
                     </a>
                     <div class="iq-sub-dropdown iq-user-dropdown">
                         <div class="iq-card shadow-none m-0">
                             <div class="iq-card-body p-0 ">
                                 <div class="bg-primary p-3">
-                                    <h5 class="mb-0 text-white line-height">Hello Bini Jets</h5>
-                                    <span class="text-white font-size-12">Available</span>
+                                    <h5 class="mb-0 text-white line-height">Hallo {{ Auth::user()->name }}</h5>
                                 </div>
-                                <a href="profile.html" class="iq-sub-card iq-bg-primary-hover">
+                                {{-- <a href="profile.html" class="iq-sub-card iq-bg-primary-hover">
                                     <div class="media align-items-center">
                                         <div class="rounded iq-card-icon iq-bg-primary">
                                             <i class="ri-file-user-line"></i>
@@ -246,10 +87,15 @@
                                             </p>
                                         </div>
                                     </div>
-                                </a>
+                                </a> --}}
                                 <div class="d-inline-block w-100 text-center p-3">
-                                    <a class="bg-primary iq-sign-btn" href="sign-in.html" role="button">Sign
-                                        out<i class="ri-login-box-line ml-2"></i></a>
+                                    <form action="{{ route('logout') }}" method="POST">
+                                        @csrf
+                                        <button class="bg-primary iq-sign-btn" type="submit">
+                                            <i class="anticon opacity-04 font-size-16 anticon-logout"></i>
+                                            Sign out <i class="ri-login-box-line ml-2"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -257,6 +103,5 @@
                 </li>
             </ul>
         </nav>
-
     </div>
 </div>

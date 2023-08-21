@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -15,8 +16,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('get.IndexHome');
+Route::get('/', [HomeController::class, 'getLogin'])->name('get.LoginHome');
+Route::get('/auth/google', [GoogleController::class, 'getRedirectToGoogle'])->name('get.Auth.Google');
+Route::get('/auth/google/callback', [GoogleController::class, 'getHandleGoogleCallback'])->name('google');
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

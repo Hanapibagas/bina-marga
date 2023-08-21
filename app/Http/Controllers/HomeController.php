@@ -6,6 +6,11 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+    public function getLogin()
+    {
+        return view('auth.login');
+    }
+
     public function index()
     {
         return view('layouts.app');

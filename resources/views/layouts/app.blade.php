@@ -139,7 +139,8 @@
                                                         id="notifications-dropdown">
                                                         <div class="iq-card shadow-none m-0">
                                                             <div class="iq-card-body p-0 ">
-                                                                <a href="#" class="iq-sub-card">
+                                                                <a data-toggle="modal" data-target="#exampleModalCenter"
+                                                                    class="btn iq-sub-card">
                                                                     <div class="media align-items-center">
                                                                         <i style="font-size: 20px;"
                                                                             class="ri-folders-fill"></i>
@@ -150,7 +151,9 @@
                                                                     </div>
                                                                 </a>
                                                                 <hr>
-                                                                <a href="#" class="iq-sub-card">
+                                                                <a data-toggle="modal"
+                                                                    data-target="#exampleModalCenterFile"
+                                                                    class="btn iq-sub-card">
                                                                     <div class="media align-items-center">
                                                                         <i style="font-size: 20px;"
                                                                             class="ri-file-fill"></i>
@@ -160,6 +163,21 @@
                                                                         </div>
                                                                     </div>
                                                                 </a>
+                                                                <hr>
+                                                                @if (Auth::user()->roles == 'super_admin')
+                                                                <a data-toggle="modal"
+                                                                    data-target="#exampleModalCenterUser"
+                                                                    class="btn iq-sub-card">
+                                                                    <div class="media align-items-center">
+                                                                        <i style="font-size: 20px;"
+                                                                            class="ri-user-fill"></i>
+                                                                        <div class="media-body ml-3">
+                                                                            <h6 style="font-size: 15px;" class="mb-0 ">
+                                                                                Pengguna Baru</h6>
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </div>
@@ -176,6 +194,162 @@
         </div>
     </div>
 
+    {{-- Folder --}}
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Folder Baru</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="exampleInputEmail1"
+                                aria-describedby="emailHelp" placeholder="Silahkan buat folder">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Buat</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- File --}}
+    <div class="modal fade" id="exampleModalCenterFile" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Upload File</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="file" class="form-control-file" id="fileInput" aria-describedby="fileHelp"><br>
+                            <div id="previewContainer"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Buat</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- User --}}
+    <div class="modal fade" id="exampleModalCenterUser" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Tambah Pengguna</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ route('get.Tambah.Pengguna') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="Pengguna">Pengguna</label>
+                            <select id="userRole" name="name" class="form-control" required>
+                                <option value="-- Silahkan Pilih --">-- Silahkan Pilih --</option>
+                                <option value="Admin bidang/upt">Admin bidang/upt</option>
+                                <option value="Admin seksi">Admin seksi</option>
+                                <option value="Admin staff">Admin staff</option>
+                            </select>
+                        </div>
+                        <div id="additionalFields" style="display: none;">
+                            <div class="form-group">
+                                <label for="Email">Email</label>
+                                <input type="email" name="email" id="userEmail" class="form-control" value="" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="Email">Jabatan</label>
+                                <input type="text" name="roles" id="userRoles" class="form-control" value="" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="Password">Password</label>
+                                <input name="password" id="userPassword" class="form-control" value="12345678" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Tambahkan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const userRoleSelect = document.getElementById('userRole');
+        const additionalFieldsDiv = document.getElementById('additionalFields');
+        const userEmailInput = document.getElementById('userEmail');
+        const userRolesInput = document.getElementById('userRoles');
+        const userPasswordInput = document.getElementById('userPassword');
+
+        userRoleSelect.addEventListener('change', function() {
+            if (userRoleSelect.value === 'Admin bidang/upt') {
+                additionalFieldsDiv.style.display = 'block';
+                userEmailInput.value = 'bidang/upt@gmail.com';
+                userRolesInput.value = 'bidang_upt';
+                userPasswordInput.value = '12345678';
+            } else if (userRoleSelect.value === 'Admin seksi') {
+                additionalFieldsDiv.style.display = 'block';
+                userEmailInput.value = 'seksi@gmail.com';
+                userRolesInput.value = 'seksi';
+                userPasswordInput.value = '12345678';
+            } else if (userRoleSelect.value === 'Admin staff') {
+                additionalFieldsDiv.style.display = 'block';
+                userEmailInput.value = 'staff@gmail.com';
+                userRolesInput.value = 'staff';
+                userPasswordInput.value = '12345678';
+            } else {
+                additionalFieldsDiv.style.display = 'none';
+            }
+        });
+    </script>
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const previewContainer = document.getElementById('previewContainer');
+
+        fileInput.addEventListener('change', function() {
+            previewContainer.innerHTML = '';
+
+            const files = fileInput.files;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const preview = document.createElement('img');
+                    preview.src = e.target.result;
+                    preview.style.maxWidth = '100%';
+                    preview.style.height = 'auto';
+                    previewContainer.appendChild(preview);
+                }
+
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
     <script>
         const chatIcon = document.getElementById('chat-icon');
         const notificationsDropdown = document.getElementById('notifications-dropdown');
@@ -183,6 +357,12 @@
         chatIcon.addEventListener('click', () => {
             notificationsDropdown.classList.toggle('show-dropdown');
         });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
     </script>
     @include('includes.script')
 

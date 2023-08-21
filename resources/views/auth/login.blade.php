@@ -64,22 +64,22 @@
                                     margin-right: 10px;
                                 }
                             </style>
-                            <div class="google-login">
+                            {{-- <div class="google-login">
                                 <a href="{{ route('get.Auth.Google') }}" style="text-decoration: #fff;color: black"
                                     class="google-btn">
                                     <i class="fab fa-google"></i> Login with Google
                                 </a>
-                            </div>
-                            <div class="text sign-up-text">Apakah anda belum mempunyai akun? <label
+                            </div> --}}
+                            {{-- <div class="text sign-up-text">Apakah anda belum mempunyai akun? <label
                                     for="flip">Daftar</label>
-                            </div>
+                            </div> --}}
                         </div>
                     </form>
 
                 </div>
                 <div class="signup-form">
                     <div class="title">Signup</div>
-                    <form action="{{ route('register') }}" method="POST">
+                    <form action="" method="POST">
                         @csrf
                         <div class="input-boxes">
                             <div class="input-box">

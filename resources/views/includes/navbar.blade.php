@@ -1,13 +1,13 @@
 <div class="iq-top-navbar header-top-sticky">
     <div class="iq-navbar-custom">
-        <div class="iq-sidebar-logo">
+        {{-- <div class="iq-sidebar-logo">
             <div class="top-logo">
                 <a href="index.html" class="logo">
                     <img src="images/logo.png" class="img-fluid" alt="">
                     <span>XRay</span>
                 </a>
             </div>
-        </div>
+        </div> --}}
         <nav class="navbar navbar-expand-lg navbar-light p-0">
             <div class="iq-search-bar">
                 <form action="#" class="searchbox">
@@ -31,8 +31,13 @@
             <ul class="navbar-list">
                 <li>
                     <a href="#" class="search-toggle iq-waves-effect d-flex align-items-center">
+                        @if (Auth::check() && Auth::user()->picture)
                         <img style="margin-right: 10px;" src="{{ Auth::user()->picture }}" width="40"
                             class="rounded-circle">
+                        @else
+                        <img style="margin-right: 10px;" src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}"
+                            width="40" class="rounded-circle" />
+                        @endif
                         <div class="caption">
                             <h6 class="mb-0 line-height"> {{ Auth::user()->name }}</h6>
                         </div>

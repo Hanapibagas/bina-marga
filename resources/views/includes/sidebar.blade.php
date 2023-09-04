@@ -14,15 +14,30 @@
         </div>
     </div>
     <div id="sidebar-scrollbar">
-        <nav class="iq-sidebar-menu">
+        <nav class="iq-sidebar-menu d-flex flex-column justify-content-between align-content-between"
+            style="height: 80vh">
             <ul id="iq-sidebar-toggle" class="iq-menu">
-                <li>
-                    <a href="#extra-pages" class="iq-waves-effect collapsed" data-toggle="collapse"
-                        aria-expanded="false"><i class="ri-folders-fill"></i><span>Extra Pages</span><i
-                            class="ri-arrow-right-s-line iq-arrow-right"></i></a>
-                    <ul id="extra-pages" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                        <li><a href="pages-timeline.html"><i class="ri-folders-fill"></i>Timeline</a></li>
-                    </ul>
+                <hr>
+                <li class="{{ request()->is('dashboard') || request()->is('folder/*') ? 'active' : '' }}">
+                    <a href="{{ route('home') }}" class="iq-waves-effect"><i
+                            class="ri-home-2-fill"></i><span>Dashboard</span></a>
+                </li>
+                <hr>
+                <li class="{{ request()->is('daftar-pengguna') ? 'active' : '' }}">
+                    <a href="{{ route('get.Index.Pengguna') }}" class="iq-waves-effect"><i
+                            class="ri-user-2-fill"></i><span>Daftar
+                            Pengguna</span></a>
+                </li>
+                <li class="{{ request()->is('setting') ? 'active' : '' }}">
+                    <a href="{{ route('get.Index.Setting') }}" class="iq-waves-effect"><i
+                            class="ri-settings-2-fill"></i><span>Pengaturan akun</span></a>
+                </li>
+                <hr>
+            </ul>
+            <ul id="iq-sidebar-toggle" class="iq-menu">
+                <li class="{{ request()->is('sampah') ? 'active' : '' }}">
+                    <a href="{{ route('get.Sampah') }}" class="iq-waves-effect"><i
+                            class="fa fa-trash"></i><span>Sampah</span></a>
                 </li>
             </ul>
         </nav>

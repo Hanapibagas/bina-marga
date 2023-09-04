@@ -18,7 +18,7 @@
             <div class="iq-card">
                 <div class="iq-card-header d-flex justify-content-between">
                     <div class="iq-header-title">
-                        <h4 class="card-title">Daftar Data Center</h4>
+                        <h4 class="card-title">{{ $details->folder_name }}</h4>
                     </div>
                     <div class="iq-card-header-toolbar d-flex align-items-center">
                         <div class="dropdown">
@@ -36,8 +36,8 @@
                                     data-target="#exampleModalCenterFile"><i style="font-size: 25px;"
                                         class="ri-file-fill"></i>File Baru +</a>
                                 {{--
-                                <hr> --}}
-                                {{-- <a style="margin-bottom: 10px;" class="dropdown-item" data-toggle="modal"
+                                <hr>
+                                <a style="margin-bottom: 10px;" class="dropdown-item" data-toggle="modal"
                                     data-target="#exampleModalCenterUser"><i style="font-size: 25px;"
                                         class="ri-user-fill"></i>Pengguna Baru +</a> --}}
                             </div>
@@ -60,7 +60,7 @@
                                 $filesWithoutFolder = [];
                                 $filesWithFolder = [];
 
-                                foreach ($data as $datas) {
+                                foreach ($folder as $datas) {
                                 if (strpos($datas->folder_name, 'folder-file/') === 0) {
                                 $filesWithFolder[] = $datas;
                                 } else {
@@ -159,15 +159,8 @@
                                                 </span>
                                                 <div class="dropdown-menu dropdown-menu-right"
                                                     aria-labelledby="dropdownMenuButton5">
-                                                    <form action="{{ route('put.Update.Status', $datas->id) }}"
-                                                        method="POST">
-                                                        @method('PUT')
-                                                        @csrf
-                                                        <button type="submit" class="dropdown-item"><i
-                                                                style="font-size: 25px;"
-                                                                class="ri-delete-bin-6-fill mr-2"></i>Pindahkan ke
-                                                            sampah</button>
-                                                    </form>
+                                                    <a class="dropdown-item" href="#"><i style="font-size: 25px;"
+                                                            class="ri-delete-bin-6-fill mr-2"></i>Delete</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -193,9 +186,13 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('post.Folder') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('post.Dalam.Folder') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
+                    <div class="form-group">
+                        <input type="hidden" name="parent_name_id" class="form-control" id="exampleInputEmail1"
+                            aria-describedby="emailHelp" placeholder="Silahkan buat folder" value="{{ $details->id }}">
+                    </div>
                     <div class="form-group">
                         <input type="text" name="folder_name" class="form-control" id="exampleInputEmail1"
                             aria-describedby="emailHelp" placeholder="Silahkan buat folder">
@@ -220,12 +217,15 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('post.File') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('post.Dalam.Folder.File') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
-                        <input type="file" name="folder_name" class="form-control-file" id="fileInput"
-                            aria-describedby="fileHelp"><br>
+                        <input type="hidden" name="parent_name_id" value="{{ $details->id }}"
+                            class="form-control-file"><br>
+                    </div>
+                    <div class="form-group">
+                        <input type="file" name="folder_name" class="form-control-file"><br>
                         <div id="previewContainer"></div>
                     </div>
                 </div>

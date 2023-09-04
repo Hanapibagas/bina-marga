@@ -10,13 +10,13 @@ class TambahPenggunaController extends Controller
 {
     public function getStorePengguna(Request $request)
     {
-        $q = User::create([
+        User::create([
             'name' => request('name'),
             'email' => request('email'),
             'roles' => request('roles'),
             'password' => bcrypt('12345678'),
         ]);
 
-        dd($q);
+        return redirect()->back()->with('status', 'Selamat data anda berhasil terinput');
     }
 }

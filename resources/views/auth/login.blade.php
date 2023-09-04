@@ -43,7 +43,7 @@
                                 <input type="password" name="password" required placeholder="Enter your password" />
                             </div>
                             <div class="button input-box">
-                                <input type="submit" value="Sumbit" />
+                                <input type="submit" value="Login" />
                             </div>
                             <style>
                                 .google-login {

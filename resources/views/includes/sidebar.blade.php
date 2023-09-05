@@ -23,11 +23,13 @@
                             class="ri-home-2-fill"></i><span>Dashboard</span></a>
                 </li>
                 <hr>
+                @if (Auth::user()->roles == 'super_admin')
                 <li class="{{ request()->is('daftar-pengguna') ? 'active' : '' }}">
                     <a href="{{ route('get.Index.Pengguna') }}" class="iq-waves-effect"><i
                             class="ri-user-2-fill"></i><span>Daftar
                             Pengguna</span></a>
                 </li>
+                @endif
                 <li class="{{ request()->is('setting') ? 'active' : '' }}">
                     <a href="{{ route('get.Index.Setting') }}" class="iq-waves-effect"><i
                             class="ri-settings-2-fill"></i><span>Pengaturan akun</span></a>

@@ -203,6 +203,14 @@
     @include('includes.script')
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const elements = document.querySelectorAll('a[data-seen-all="true"]');
+            elements.forEach((element) => {
+                element.querySelector(".badge").style.display = "none";
+            });
+        });
+    </script>
+    <script>
         const userRoleSelect = document.getElementById('userRole');
         const additionalFieldsDiv = document.getElementById('additionalFields');
         const userEmailInput = document.getElementById('userEmail');

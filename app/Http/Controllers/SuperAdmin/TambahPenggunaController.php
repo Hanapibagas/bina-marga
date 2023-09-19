@@ -11,6 +11,8 @@ class TambahPenggunaController extends Controller
     public function getStorePengguna(Request $request)
     {
         User::create([
+            'nama_penanggung_jawab' => request('nama_penanggung_jawab'),
+            'nip_oprator' => request('nip_oprator'),
             'name' => request('name'),
             'email' => request('email'),
             'roles' => request('roles'),

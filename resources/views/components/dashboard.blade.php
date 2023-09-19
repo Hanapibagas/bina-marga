@@ -143,10 +143,38 @@
                                 @foreach ($filesWithFolder as $key => $datas)
                                 <tr>
                                     <td>
-                                        <a href="{{ route('get.Details', $datas->id) }}">
-                                            <i style="font-size: 30px;" class="ri-file-fill"></i> {{
+                                        @if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $datas->folder_name))
+                                        <a style="color: #089bab" alt="image" data-toggle="modal"
+                                            data-target="#myModal-{{ $datas->id }}">
+                                            <i style="font-size: 30px; color: #089bab" class="ri-image-2-fill"></i>
+                                            {{
                                             substr($datas->folder_name, 12) }}
                                         </a>
+                                        @else
+                                        @php
+                                        $extension = pathinfo($datas->folder_name, PATHINFO_EXTENSION);
+                                        $iconClass = '';
+                                        switch ($extension) {
+                                        case 'pdf':
+                                        $iconClass = 'ri-file-pdf-fill';
+                                        break;
+                                        case 'xlsx':
+                                        $iconClass = 'ri-file-excel-fill';
+                                        break;
+                                        case 'docx':
+                                        $iconClass = 'ri-file-word-fill';
+                                        break;
+                                        default:
+                                        $iconClass = 'ri-file-fill';
+                                        break;
+                                        }
+                                        @endphp
+                                        <a target="_blank"
+                                            href="https://docs.google.com/gview?embedded=true&url=https://data-canter.taekwondosulsel.info/storage/{{ $datas->folder_name }}">
+                                            <i style="font-size: 30px;" class="{{ $iconClass }}"></i> {{
+                                            substr($datas->folder_name, 12) }}
+                                        </a>
+                                        @endif
                                     </td>
                                     <td>{{ $datas->Users->name }}</td>
                                     <td>{{ date('d F Y', strtotime($datas->tanggal)) }}</td>
@@ -159,6 +187,9 @@
                                                 </span>
                                                 <div class="dropdown-menu dropdown-menu-right"
                                                     aria-labelledby="dropdownMenuButton5">
+                                                    <a class="dropdown-item" href=""><i style="font-size: 25px;"
+                                                            class="ri-download-2-fill mr-2"></i>Download</a>
+                                                    <hr>
                                                     <form action="{{ route('put.Update.Status', $datas->id) }}"
                                                         method="POST">
                                                         @method('PUT')
@@ -182,6 +213,25 @@
         </div>
     </div>
 </div>
+
+@foreach ( $data as $datas )
+<div class="modal fade" id="myModal-{{ $datas->id }}" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">File Foto</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img src="{{ asset('storage/'. $datas->folder_name) }}" alt="Gambar Besar" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
 
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
@@ -220,7 +270,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('post.File') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('post.File') }}" method="POST" enctype="multipart/form-data" id="fileUploadForm">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
@@ -228,10 +278,16 @@
                             aria-describedby="fileHelp"><br>
                         <div id="previewContainer"></div>
                     </div>
+                    <div class="progress" style="display:none;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                            <span class="progress-percent">0%</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Buat</button>
+                    <button type="submit" class="btn btn-primary" id="uploadButton">Tambahkan</button>
                 </div>
             </form>
         </div>
@@ -286,6 +342,50 @@
 @endsection
 
 @push('js')
+{{-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+</script> --}}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#fileUploadForm').on('submit', function (e) {
+            e.preventDefault();
+
+            var formData = new FormData($(this)[0]);
+
+            $.ajax({
+                url: "{{ route('post.File') }}",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                xhr: function () {
+                    var xhr = new window.XMLHttpRequest();
+
+                    xhr.upload.addEventListener("progress", function (evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = (evt.loaded / evt.total) * 100;
+                            $('.progress').show();
+                            $('.progress-bar').width(percentComplete + '%');
+                            $('.progress-percent').text(percentComplete.toFixed(2) + '%');
+                        }
+                    }, false);
+
+                    return xhr;
+                },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (error) {
+                    alert('Data Invalid');
+                }
+            });
+        });
+    });
+</script>
 <script>
     const userRoleSelect = document.getElementById('userRole');
     const additionalFieldsDiv = document.getElementById('additionalFields');
@@ -346,11 +446,5 @@
     chatIcon.addEventListener('click', () => {
         notificationsDropdown.classList.toggle('show-dropdown');
     });
-</script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
 </script>
 @endpush

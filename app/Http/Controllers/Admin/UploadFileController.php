@@ -30,7 +30,7 @@ class UploadFileController extends Controller
         $user = Auth::id();
         if ($request->file('folder_name')) {
             $uploadedFile = $request->file('folder_name');
-            $originalFileName = $uploadedFile->getClientOriginalName(); // Mendapatkan nama asli file
+            $originalFileName = $uploadedFile->getClientOriginalName();
 
             $file = $uploadedFile->storeAs('folder-file', $originalFileName, 'public');
         }

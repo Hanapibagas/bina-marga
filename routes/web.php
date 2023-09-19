@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DaftarPenggunaController;
+use App\Http\Controllers\Admin\PengumumanController;
 use App\Http\Controllers\Admin\SettingProfileController;
 use App\Http\Controllers\Admin\UploadFileController;
 use App\Http\Controllers\GoogleController;
@@ -26,6 +27,11 @@ Route::post('/tambah-pengguna', [TambahPenggunaController::class, 'getStorePengg
 Route::get('/daftar-pengguna', [DaftarPenggunaController::class, 'getIndex'])->name('get.Index.Pengguna');
 Route::get('/setting', [SettingProfileController::class, 'getIndex'])->name('get.Index.Setting');
 Route::put('/setting/update-password', [SettingProfileController::class, 'postUpdatePassword'])->name('put.Password.User');
+
+Route::get('/pengumuman', [PengumumanController::class, 'getIndex'])->name('get.Index.Pengumuman');
+Route::post('/pengumuman/create', [PengumumanController::class, 'storePengumuman'])->name('post.Pengumuman');
+Route::put('/pengumuman/update/{id}', [PengumumanController::class, 'putPengumuman'])->name('put.Pengmumuman');
+Route::delete('/pengumuman/delete/{id}', [PengumumanController::class, 'deletePengumuman'])->name('delete.Pengumuman');
 
 // routeu untuk semua akun
 Route::post('/tambah-folder', [UploadFileController::class, 'storeFolder'])->name('post.Folder');

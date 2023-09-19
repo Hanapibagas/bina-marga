@@ -93,6 +93,14 @@
                     </div>
                     <div id="additionalFields" style="display: none;">
                         <div class="form-group">
+                            <label>Nama Penanggung Jawab</label>
+                            <input type="text" name="nama_penanggung_jawab" class="form-control" value="">
+                        </div>
+                        <div class="form-group">
+                            <label>NIP Oprator</label>
+                            <input type="number" name="nip_oprator" class="form-control" value="">
+                        </div>
+                        <div class="form-group">
                             <label for="Email">Email</label>
                             <input type="email" name="email" id="userEmail" class="form-control" value="" readonly>
                         </div>

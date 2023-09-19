@@ -30,6 +30,10 @@
                             Pengguna</span></a>
                 </li>
                 @endif
+                <li class="{{ request()->is('pengumuman') ? 'active' : '' }}">
+                    <a href="{{ route('get.Index.Pengumuman') }}" class="iq-waves-effect"><i
+                            class="ri-mail-open-fill"></i><span>Pengumuman</span></a>
+                </li>
                 <li class="{{ request()->is('setting') ? 'active' : '' }}">
                     <a href="{{ route('get.Index.Setting') }}" class="iq-waves-effect"><i
                             class="ri-settings-2-fill"></i><span>Pengaturan akun</span></a>

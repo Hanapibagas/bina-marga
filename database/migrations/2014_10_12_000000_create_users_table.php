@@ -17,6 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('nama_penanggung_jawab')->nullable();
+            $table->string('nip_oprator')->nullable();
+            $table->string('api_token')->nullable();
             $table->string('google_id')->nullable();
             $table->string('roles')->nullable();
             $table->string('picture')->nullable();

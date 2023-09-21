@@ -22,10 +22,12 @@ class SettingProfileController extends Controller
     {
         $user = Auth::user();
 
+        $user->nama_penanggung_jawab = $request->nama_penanggung_jawab;
+        $user->nip_oprator = $request->nip_oprator;
         $user->password = Hash::make($request->password);
 
         $user->save();
 
-        return redirect()->back()->with('status', 'Selamat paswword anda berhasil terupdate');
+        return redirect()->back()->with('status', 'Selamat data profile anda berhasil diperbarui');
     }
 }

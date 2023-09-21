@@ -88,4 +88,11 @@ class UploadFileController extends Controller
 
         return redirect()->back()->with('status', 'Selamat data anda berhasil terinput');
     }
+
+    // public function getCari(Request $request)
+    // {
+    //     $keyword = $request->search;
+
+    //     $file =
+    // }
 }

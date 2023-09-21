@@ -50,7 +50,9 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Nama</th>
-                                    <th scope="col">Pengguna</th>
+                                    @if (Auth::user()->roles == 'super_admin')
+                                    <th scope="col">Aktivasi Pengguna</th>
+                                    @endif
                                     <th scope="col">Tanggal</th>
                                     <th scope="col"></th>
                                 </tr>
@@ -77,7 +79,9 @@
                                             $datas->folder_name }}
                                         </a>
                                     </td>
+                                    @if (Auth::user()->roles == 'super_admin')
                                     <td>{{ $datas->Users->name }}</td>
+                                    @endif
                                     <td>{{ date('d F Y', strtotime($datas->tanggal)) }}</td>
                                     <td>
                                         <div class="iq-card-header-toolbar d-flex align-items-center">
@@ -113,7 +117,8 @@
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLongTitle">Edit Nama Folder</h5>
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Edit Nama Folder
+                                                </h5>
                                                 <button type="button" class="close" data-dismiss="modal"
                                                     aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
@@ -132,7 +137,8 @@
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
                                                         data-dismiss="modal">Batal</button>
-                                                    <button type="submit" class="btn btn-primary">Ubah Nama</button>
+                                                    <button type="submit" class="btn btn-primary">Ubah
+                                                        Nama</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -147,7 +153,11 @@
                                         <a style="color: #089bab" alt="image" data-toggle="modal"
                                             data-target="#myModal-{{ $datas->id }}">
                                             <i style="font-size: 30px; color: #089bab" class="ri-image-2-fill"></i>
-                                            {{
+                                            {{ substr($datas->folder_name, 12) }}
+                                        </a>
+                                        @elseif (preg_match('/\.mp4$/i', $datas->folder_name))
+                                        <a target="_blank" href="URL_KE_VIDEO_MP4_DISINI">
+                                            <i style="font-size: 30px;" class="ri-video-fill"></i> {{
                                             substr($datas->folder_name, 12) }}
                                         </a>
                                         @else
@@ -176,7 +186,9 @@
                                         </a>
                                         @endif
                                     </td>
+                                    @if (Auth::user()->roles == 'super_admin')
                                     <td>{{ $datas->Users->name }}</td>
+                                    @endif
                                     <td>{{ date('d F Y', strtotime($datas->tanggal)) }}</td>
                                     <td>
                                         <div class="iq-card-header-toolbar d-flex align-items-center">
@@ -187,9 +199,19 @@
                                                 </span>
                                                 <div class="dropdown-menu dropdown-menu-right"
                                                     aria-labelledby="dropdownMenuButton5">
-                                                    <a class="dropdown-item" href="#"><i style="font-size: 25px;"
-                                                            class="ri-delete-bin-6-fill mr-2"></i>Pindahkan ke
-                                                        sampah</a>
+                                                    <a class="dropdown-item" href="storage/{{ $datas->folder_name }}"
+                                                        download><i style="font-size: 25px;"
+                                                            class="ri-file-download-fill mr-2"></i>Download</a>
+                                                    <hr>
+                                                    <form action="{{ route('put.Update.Status', $datas->id) }}"
+                                                        method="POST">
+                                                        @method('PUT')
+                                                        @csrf
+                                                        <button type="submit" class="dropdown-item"><i
+                                                                style="font-size: 25px;"
+                                                                class="ri-delete-bin-6-fill mr-2"></i>Pindahkan ke
+                                                            sampah</button>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
@@ -265,8 +287,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('post.Dalam.Folder.File') }}" method="POST" enctype="multipart/form-data"
-                id="fileUploadForm">
+            <form action="{{ route('post.Dalam.Folder.File') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
@@ -274,20 +295,13 @@
                             class="form-control-file"><br>
                     </div>
                     <div class="form-group">
-                        <input type="file" name="folder_name" class="form-control-file" id="fileInput"
-                            aria-describedby="fileHelp"><br>
+                        <input type="file" name="folder_name" class="form-control-file"><br>
                         <div id="previewContainer"></div>
-                    </div>
-                    <div class="progress" style="display:none;">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-                            <span class="progress-percent">0%</span>
-                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary" id="uploadButton">Tambahkan</button>
+                    <button type="submit" class="btn btn-primary">Buat</button>
                 </div>
             </form>
         </div>

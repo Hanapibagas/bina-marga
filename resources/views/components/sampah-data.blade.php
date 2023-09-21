@@ -33,7 +33,123 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($data as $datas)
+                                @php
+                                $filesWithoutFolder = [];
+                                $filesWithFolder = [];
+
+                                foreach ($data as $datas) {
+                                if (strpos($datas->folder_name, 'folder-file/') === 0) {
+                                $filesWithFolder[] = $datas;
+                                } else {
+                                $filesWithoutFolder[] = $datas;
+                                }
+                                }
+                                @endphp
+
+                                @foreach ($filesWithoutFolder as $key => $datas)
+                                @if (!$datas->is_recycle)
+                                <tr>
+                                    <td>
+                                        <a href="{{ route('get.Details', $datas->id) }}">
+                                            <i style="font-size: 30px;" class="ri-folders-fill"></i>{{
+                                            $datas->folder_name }}
+                                        </a>
+                                    </td>
+                                    <td>{{ $datas->Users->name }}</td>
+                                    <td>{{ date('d F Y', strtotime($datas->tanggal)) }}</td>
+                                    <td>
+                                        <div class="iq-card-header-toolbar d-flex align-items-center">
+                                            <div class="dropdown">
+                                                <span class="dropdown-toggle text-primary" id="dropdownMenuButton5"
+                                                    data-toggle="dropdown">
+                                                    <i style="margin-left: 30px;" class="ri-more-2-fill"></i>
+                                                </span>
+                                                <div class="dropdown-menu dropdown-menu-right"
+                                                    aria-labelledby="dropdownMenuButton5">
+                                                    <form action="{{ route('put.Pulihkan.Status', $datas->id) }}"
+                                                        method="POST">
+                                                        @method('PUT')
+                                                        @csrf
+                                                        <button type="submit" class="dropdown-item"><i
+                                                                style="font-size: 25px;"
+                                                                class="fa fa-upload mr-2"></i>Pulihkan</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endif
+                                @endforeach
+
+                                @foreach ($filesWithFolder as $key => $datas)
+                                @if (!$datas->is_recycle)
+                                <tr>
+                                    <td>
+                                        @if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $datas->folder_name))
+                                        <a style="color: #089bab" alt="image" data-toggle="modal"
+                                            data-target="#myModal-{{ $datas->id }}">
+                                            <i style="font-size: 30px; color: #089bab" class="ri-image-2-fill"></i>
+                                            {{ substr($datas->folder_name, 12) }}
+                                        </a>
+                                        @elseif (preg_match('/\.mp4$/i', $datas->folder_name))
+                                        <a target="_blank" href="URL_KE_VIDEO_MP4_DISINI">
+                                            <i style="font-size: 30px;" class="ri-video-fill"></i> {{
+                                            substr($datas->folder_name, 12) }}
+                                        </a>
+                                        @else
+                                        @php
+                                        $extension = pathinfo($datas->folder_name, PATHINFO_EXTENSION);
+                                        $iconClass = '';
+                                        switch ($extension) {
+                                        case 'pdf':
+                                        $iconClass = 'ri-file-pdf-fill';
+                                        break;
+                                        case 'xlsx':
+                                        $iconClass = 'ri-file-excel-fill';
+                                        break;
+                                        case 'docx':
+                                        $iconClass = 'ri-file-word-fill';
+                                        break;
+                                        default:
+                                        $iconClass = 'ri-file-fill';
+                                        break;
+                                        }
+                                        @endphp
+                                        <a target="_blank"
+                                            href="https://docs.google.com/gview?embedded=true&url=https://data-canter.taekwondosulsel.info/storage/{{ $datas->folder_name }}">
+                                            <i style="font-size: 30px;" class="{{ $iconClass }}"></i> {{
+                                            substr($datas->folder_name, 12) }}
+                                        </a>
+                                        @endif
+                                    </td>
+                                    <td>{{ $datas->Users->name }}</td>
+                                    <td>{{ date('d F Y', strtotime($datas->tanggal)) }}</td>
+                                    <td>
+                                        <div class="iq-card-header-toolbar d-flex align-items-center">
+                                            <div class="dropdown">
+                                                <span class="dropdown-toggle text-primary" id="dropdownMenuButton5"
+                                                    data-toggle="dropdown">
+                                                    <i style="margin-left: 30px;" class="ri-more-2-fill"></i>
+                                                </span>
+                                                <div class="dropdown-menu dropdown-menu-right"
+                                                    aria-labelledby="dropdownMenuButton5">
+                                                    <form action="{{ route('put.Pulihkan.Status', $datas->id) }}"
+                                                        method="POST">
+                                                        @method('PUT')
+                                                        @csrf
+                                                        <button type="submit" class="dropdown-item"><i
+                                                                style="font-size: 25px;"
+                                                                class="fa fa-upload mr-2"></i>Pulihkan</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endif
+                                @endforeach
+                                {{-- @foreach ($data as $datas)
                                 @if (!$datas->is_recycle)
                                 <tr>
                                     <td>
@@ -67,7 +183,7 @@
                                     </td>
                                 </tr>
                                 @endif
-                                @endforeach
+                                @endforeach --}}
                             </tbody>
                         </table>
                     </div>

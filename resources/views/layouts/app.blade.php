@@ -9,7 +9,6 @@
     @include('includes.style')
 
     @stack('css')
-
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
@@ -202,6 +201,17 @@
 
     @include('includes.script')
 
+    <script>
+        $(document).ready(function() {
+            // Membuat fungsi pencarian real-time
+            $("#search-input").on("keyup", function() {
+                var searchText = $(this).val().toLowerCase();
+                $("#datatable tbody tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1)
+                });
+            });
+        });
+    </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const elements = document.querySelectorAll('a[data-seen-all="true"]');

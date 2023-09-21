@@ -11,7 +11,7 @@
         <nav class="navbar navbar-expand-lg navbar-light p-0">
             <div class="iq-search-bar">
                 <form action="#" class="searchbox">
-                    <input type="text" class="text search-input" placeholder="Cari file anda">
+                    <input type="text" class="text search-input" id="search-input" placeholder="Cari file anda">
                     <a class="search-link" href="#"><i class="ri-search-line"></i></a>
                 </form>
             </div>

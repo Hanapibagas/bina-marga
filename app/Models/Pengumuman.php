@@ -13,5 +13,11 @@ class Pengumuman extends Model
         'judul',
         'keterangan',
         'tannggal',
+        'users_id',
     ];
+
+    public function Users()
+    {
+        return $this->belongsTo(User::class, 'users_id');
+    }
 }

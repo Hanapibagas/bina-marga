@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Pengumuman;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PengumumanController extends Controller
 {
@@ -17,7 +18,9 @@ class PengumumanController extends Controller
 
     public function storePengumuman(Request $request)
     {
+        $user = Auth::id();
         Pengumuman::create([
+            'users_id' => $user,
             'judul' => $request->input('judul'),
             'keterangan' => $request->input('keterangan'),
             'tannggal' => $request->input('tannggal'),

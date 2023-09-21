@@ -60,6 +60,16 @@
                                                 value="{{ $user->roles }}" readonly>
                                         </div>
                                         <div class="form-group col-sm-6">
+                                            <label for="fname">Nama Penanggung Jawab</label>
+                                            <input type="text" name="nama_penanggung_jawab" class="form-control"
+                                                id="fname" value="{{ $user->nama_penanggung_jawab }}">
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <label for="fname">NIP Oprator</label>
+                                            <input type="text" name="nip_oprator" class="form-control" id="fname"
+                                                value="{{ $user->nip_oprator }}">
+                                        </div>
+                                        <div class="form-group col-sm-6">
                                             <label for="cname">Password</label>
                                             <input type="text" class="form-control" name="password" id="cname">
                                         </div>

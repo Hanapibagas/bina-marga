@@ -2,15 +2,110 @@
 
 @section('content')
 
+@push('css')
+<style>
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 999;
+        width: 100vw;
+        height: 100vh;
+        background-color: #000;
+        opacity: 0.5;
+    }
+
+    .announcement {
+        position: absolute;
+        top: 50%;
+        /* Pusatkan vertikal */
+        left: 50%;
+        /* Pusatkan horizontal */
+        transform: translate(-50%, -50%);
+        /* Pusatkan elemen ke tengah */
+        z-index: 1000;
+        /* Beri z-index yang lebih tinggi dari overlay jika perlu */
+        width: 60vw;
+        height: max-content;
+        padding: 10px;
+        border-radius: 10px
+    }
+
+    .announcement .title {
+        font-size: 30px;
+    }
+
+    .announcement .badge {
+        font-size: 12px;
+    }
+
+    .announcement .card-body {
+        position: relative;
+        height: fit-content;
+    }
+
+    .owl-stage-outer {
+        height: fit-content;
+        overflow: hidden;
+    }
+
+    .owl-stage {
+        display: flex;
+        flex-direction: row;
+        overflow: hidden;
+    }
+
+    .owl-nav {
+        display: none
+    }
+
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+</style>
+@endpush
+
 @if (session('status'))
 <script>
     Swal.fire({
-        icon: 'success',
-        title: 'Sukses!',
-        text : "{{ session('status') }}",
-    });
+                icon: 'success',
+                title: 'Sukses!',
+                text: "{{ session('status') }}",
+            });
 </script>
 @endif
+
+@php
+if (!session('announcement')) {
+$twoDaysAgo = now()->subDays(2);
+$pengumuman = \App\Models\Pengumuman::where('created_at', '>=', $twoDaysAgo)
+->orderBy('created_at', 'desc')
+->get();
+echo '<div class="overlay">
+    <div class="announcement card">
+        <div class="card-body">
+            <button class="close">X</button>
+            <div class="owl-carouselss owl-theme">';
+                foreach ($pengumuman as $announcement) {
+                echo'<div class="item">
+                    <div class="title">'. $announcement->judul . '</div>
+                    <span class="badge badge-secondary">' .
+                        date('d F Y', strtotime($announcement->tannggal)) . '</span> Diposting oleh : <i
+                        style="font-size: 15px;">'. $announcement->Users->name .'</i>
+                    <div class="desc">
+                        ' . $announcement->keterangan . '
+                    </div>
+                </div>';
+                }
+                echo'</div>
+        </div>
+    </div>
+</div>';
+session(['announcement' => true]);
+}
+@endphp
 
 <div class="container-fluid">
     <div class="row">
@@ -50,7 +145,9 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Nama</th>
-                                    <th scope="col">Pengguna</th>
+                                    @if (Auth::user()->roles == 'super_admin')
+                                    <th scope="col">Aktivasi Pengguna</th>
+                                    @endif
                                     <th scope="col">Tanggal</th>
                                     <th scope="col"></th>
                                 </tr>
@@ -77,7 +174,9 @@
                                             $datas->folder_name }}
                                         </a>
                                     </td>
+                                    @if (Auth::user()->roles == 'super_admin')
                                     <td>{{ $datas->Users->name }}</td>
+                                    @endif
                                     <td>{{ date('d F Y', strtotime($datas->tanggal)) }}</td>
                                     <td>
                                         <div class="iq-card-header-toolbar d-flex align-items-center">
@@ -113,7 +212,8 @@
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLongTitle">Edit Nama Folder</h5>
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Edit Nama Folder
+                                                </h5>
                                                 <button type="button" class="close" data-dismiss="modal"
                                                     aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
@@ -132,7 +232,8 @@
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
                                                         data-dismiss="modal">Batal</button>
-                                                    <button type="submit" class="btn btn-primary">Ubah Nama</button>
+                                                    <button type="submit" class="btn btn-primary">Ubah
+                                                        Nama</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -147,7 +248,11 @@
                                         <a style="color: #089bab" alt="image" data-toggle="modal"
                                             data-target="#myModal-{{ $datas->id }}">
                                             <i style="font-size: 30px; color: #089bab" class="ri-image-2-fill"></i>
-                                            {{
+                                            {{ substr($datas->folder_name, 12) }}
+                                        </a>
+                                        @elseif (preg_match('/\.mp4$/i', $datas->folder_name))
+                                        <a target="_blank" href="URL_KE_VIDEO_MP4_DISINI">
+                                            <i style="font-size: 30px;" class="ri-video-fill"></i> {{
                                             substr($datas->folder_name, 12) }}
                                         </a>
                                         @else
@@ -176,7 +281,9 @@
                                         </a>
                                         @endif
                                     </td>
+                                    @if (Auth::user()->roles == 'super_admin')
                                     <td>{{ $datas->Users->name }}</td>
+                                    @endif
                                     <td>{{ date('d F Y', strtotime($datas->tanggal)) }}</td>
                                     <td>
                                         <div class="iq-card-header-toolbar d-flex align-items-center">
@@ -187,8 +294,9 @@
                                                 </span>
                                                 <div class="dropdown-menu dropdown-menu-right"
                                                     aria-labelledby="dropdownMenuButton5">
-                                                    <a class="dropdown-item" href=""><i style="font-size: 25px;"
-                                                            class="ri-download-2-fill mr-2"></i>Download</a>
+                                                    <a class="dropdown-item" href="storage/{{ $datas->folder_name }}"
+                                                        download><i style="font-size: 25px;"
+                                                            class="ri-file-download-fill mr-2"></i>Download</a>
                                                     <hr>
                                                     <form action="{{ route('put.Update.Status', $datas->id) }}"
                                                         method="POST">
@@ -213,25 +321,6 @@
         </div>
     </div>
 </div>
-
-@foreach ( $data as $datas )
-<div class="modal fade" id="myModal-{{ $datas->id }}" tabindex="-1" role="dialog"
-    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">File Foto</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <img src="{{ asset('storage/'. $datas->folder_name) }}" alt="Gambar Besar" class="img-fluid">
-            </div>
-        </div>
-    </div>
-</div>
-@endforeach
 
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
@@ -270,7 +359,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('post.File') }}" method="POST" enctype="multipart/form-data" id="fileUploadForm">
+            <form action="{{ route('post.File') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
@@ -278,16 +367,10 @@
                             aria-describedby="fileHelp"><br>
                         <div id="previewContainer"></div>
                     </div>
-                    <div class="progress" style="display:none;">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-                            <span class="progress-percent">0%</span>
-                        </div>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary" id="uploadButton">Tambahkan</button>
+                    <button type="submit" class="btn btn-primary">Buat</button>
                 </div>
             </form>
         </div>
@@ -342,109 +425,126 @@
 @endsection
 
 @push('js')
-{{-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
-</script> --}}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
-</script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('#fileUploadForm').on('submit', function (e) {
-            e.preventDefault();
-
-            var formData = new FormData($(this)[0]);
-
-            $.ajax({
-                url: "{{ route('post.File') }}",
-                type: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                xhr: function () {
-                    var xhr = new window.XMLHttpRequest();
-
-                    xhr.upload.addEventListener("progress", function (evt) {
-                        if (evt.lengthComputable) {
-                            var percentComplete = (evt.loaded / evt.total) * 100;
-                            $('.progress').show();
-                            $('.progress-bar').width(percentComplete + '%');
-                            $('.progress-percent').text(percentComplete.toFixed(2) + '%');
-                        }
-                    }, false);
-
-                    return xhr;
-                },
-                success: function (response) {
-                    location.reload();
-                },
-                error: function (error) {
-                    alert('Data Invalid');
-                }
-            });
-        });
-    });
-</script>
 <script>
     const userRoleSelect = document.getElementById('userRole');
-    const additionalFieldsDiv = document.getElementById('additionalFields');
-    const userEmailInput = document.getElementById('userEmail');
-    const userRolesInput = document.getElementById('userRoles');
-    const userPasswordInput = document.getElementById('userPassword');
+        const additionalFieldsDiv = document.getElementById('additionalFields');
+        const userEmailInput = document.getElementById('userEmail');
+        const userRolesInput = document.getElementById('userRoles');
+        const userPasswordInput = document.getElementById('userPassword');
 
-    userRoleSelect.addEventListener('change', function() {
-        if (userRoleSelect.value === 'Admin bidang/upt') {
-            additionalFieldsDiv.style.display = 'block';
-            userEmailInput.value = 'bidang/upt@gmail.com';
-            userRolesInput.value = 'bidang_upt';
-            userPasswordInput.value = '12345678';
-        } else if (userRoleSelect.value === 'Admin seksi') {
-            additionalFieldsDiv.style.display = 'block';
-            userEmailInput.value = 'seksi@gmail.com';
-            userRolesInput.value = 'seksi';
-            userPasswordInput.value = '12345678';
-        } else if (userRoleSelect.value === 'Admin staff') {
-            additionalFieldsDiv.style.display = 'block';
-            userEmailInput.value = 'staff@gmail.com';
-            userRolesInput.value = 'staff';
-            userPasswordInput.value = '12345678';
-        } else {
-            additionalFieldsDiv.style.display = 'none';
-        }
-    });
+        userRoleSelect.addEventListener('change', function() {
+            if (userRoleSelect.value === 'Admin bidang/upt') {
+                additionalFieldsDiv.style.display = 'block';
+                userEmailInput.value = 'bidang/upt@gmail.com';
+                userRolesInput.value = 'bidang_upt';
+                userPasswordInput.value = '12345678';
+            } else if (userRoleSelect.value === 'Admin seksi') {
+                additionalFieldsDiv.style.display = 'block';
+                userEmailInput.value = 'seksi@gmail.com';
+                userRolesInput.value = 'seksi';
+                userPasswordInput.value = '12345678';
+            } else if (userRoleSelect.value === 'Admin staff') {
+                additionalFieldsDiv.style.display = 'block';
+                userEmailInput.value = 'staff@gmail.com';
+                userRolesInput.value = 'staff';
+                userPasswordInput.value = '12345678';
+            } else {
+                additionalFieldsDiv.style.display = 'none';
+            }
+        });
 </script>
 <script>
     const fileInput = document.getElementById('fileInput');
-    const previewContainer = document.getElementById('previewContainer');
+        const previewContainer = document.getElementById('previewContainer');
 
-    fileInput.addEventListener('change', function() {
-        previewContainer.innerHTML = '';
+        fileInput.addEventListener('change', function() {
+            previewContainer.innerHTML = '';
 
-        const files = fileInput.files;
+            const files = fileInput.files;
 
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const reader = new FileReader();
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
 
-            reader.onload = function(e) {
-                const preview = document.createElement('img');
-                preview.src = e.target.result;
-                preview.style.maxWidth = '100%';
-                preview.style.height = 'auto';
-                previewContainer.appendChild(preview);
+                reader.onload = function(e) {
+                    const preview = document.createElement('img');
+                    preview.src = e.target.result;
+                    preview.style.maxWidth = '100%';
+                    preview.style.height = 'auto';
+                    previewContainer.appendChild(preview);
+                }
+
+                reader.readAsDataURL(file);
             }
-
-            reader.readAsDataURL(file);
-        }
-    });
+        });
 </script>
 <script>
     const chatIcon = document.getElementById('chat-icon');
-    const notificationsDropdown = document.getElementById('notifications-dropdown');
+        const notificationsDropdown = document.getElementById('notifications-dropdown');
 
-    chatIcon.addEventListener('click', () => {
-        notificationsDropdown.classList.toggle('show-dropdown');
-    });
+        chatIcon.addEventListener('click', () => {
+            notificationsDropdown.classList.toggle('show-dropdown');
+        });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+            let announcement = document.querySelector(".announcement");
+            let overlay = document.querySelector(".overlay");
+            let closeButton = document.querySelector(".close");
+
+            if (announcement) {
+                document.body.appendChild(overlay);
+                document.body.appendChild(announcement);
+            }
+
+            closeButton.addEventListener('click', function() {
+                overlay.remove();
+                announcement.remove();
+            })
+        });
+
+        // Mengecek apakah overlay pernah ditampilkan sebelumnya
+        if (!localStorage.getItem('overlayShown')) {
+            // Jika belum pernah ditampilkan, maka tampilkan overlay
+            $(".overlay").show();
+
+            // Menandai bahwa overlay sudah ditampilkan
+            localStorage.setItem('overlayShown', 'true');
+        }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
+    integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $('.owl-carouselss').owlCarousel({
+            loop: true,
+            margin: 10,
+            dots: false,
+            nav: false,
+            autoplay: true,
+            autoplayTimeout: 7000,
+            autoplayHoverPause: true,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 1
+                },
+                1000: {
+                    items: 1
+                }
+            }
+        })
+</script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
 </script>
 @endpush

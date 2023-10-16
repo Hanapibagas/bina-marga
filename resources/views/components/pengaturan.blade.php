@@ -33,8 +33,8 @@
                                         <div class="col-md-12">
                                             <div class="profile-img-edit">
                                                 @if (Auth::check() && Auth::user()->picture)
-                                                <img width="100%" src="{{ Auth::user()->picture }}" class="profile-pic"
-                                                    alt="profile-pic">
+                                                <img width="100%" src="{{ Storage::url($user->picture) }}"
+                                                    class="profile-pic" alt="profile-pic">
                                                 @else
                                                 <img width="100%"
                                                     src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}"

@@ -11,7 +11,7 @@ class PengumumanController extends Controller
 {
     public function getIndex()
     {
-        $pengumuman = Pengumuman::orderBy('created_at', 'desc')->get();;
+        $pengumuman = Pengumuman::orderBy('created_at', 'desc')->get();
 
         return view('components.pengumuman', compact('pengumuman'));
     }

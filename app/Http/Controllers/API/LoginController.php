@@ -29,6 +29,11 @@ class LoginController extends Controller
             $success['id'] =  $user->id;
             $success['roles'] =  $user->roles;
             $success['name'] =  $user->name;
+            $success['permission_edit'] =  $user->permission_edit;
+            $success['permission_upload'] =  $user->permission_upload;
+            $success['permission_edit'] =  $user->permission_edit;
+            $success['permission_create'] =  $user->permission_create;
+            $success['permission_download'] =  $user->permission_download;
 
             return response()->json([
                 'message' => 'Login successful.',
@@ -102,7 +107,7 @@ class LoginController extends Controller
 
     public function postPassword(Request $request)
     {
-        $user = Auth::user();
+        $user = auth()->user(); // Mengambil pengguna yang sedang masuk
 
         // Validasi permintaan
         $request->validate([
@@ -110,15 +115,16 @@ class LoginController extends Controller
             'new_password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Memeriksa kata sandi saat ini
-        if (!Hash::check($request->input('current_password'), $user->password)) {
-            return response()->json(['message' => 'Kata sandi saat ini tidak cocok.'], 400);
+        // Periksa apakah password saat ini benar
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json(['message' => 'Password saat ini salah'], 422);
         }
 
-        // Memperbarui kata sandi
-        $user->password = Hash::make($request->input('new_password'));
-        $user->save();
+        // Perbarui password
+        $user->update([
+            'password' => Hash::make($request->new_password),
+        ]);
 
-        return response()->json(['message' => 'Kata sandi berhasil diperbarui.']);
+        return response()->json(['message' => 'Password berhasil diperbarui']);
     }
 }

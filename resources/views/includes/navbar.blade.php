@@ -32,7 +32,7 @@
                 <li>
                     <a href="#" class="search-toggle iq-waves-effect d-flex align-items-center">
                         @if (Auth::check() && Auth::user()->picture)
-                        <img style="margin-right: 10px;" src="{{ Auth::user()->picture }}" width="40"
+                        <img style="margin-right: 10px;" src="{{ Storage::url($user->picture) }}" width="40"
                             class="rounded-circle">
                         @else
                         <img style="margin-right: 10px;"

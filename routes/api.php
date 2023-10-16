@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\DetailsFolderController;
 use App\Http\Controllers\API\LoginController;
+use App\Http\Controllers\API\PengumumanController;
 use App\Http\Controllers\API\UploadFileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +15,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/v1/update-password', [LoginController::class, 'postPassword']);
     Route::put('/v1/update-profile', [LoginController::class, 'putUpdateProfile']);
 
+    Route::get('/v1/pengumuman', [PengumumanController::class, 'getIndexPengmumumann']);
     Route::post('/v1/upload-file', [UploadFileController::class, 'storeFile']);
     Route::post('/v1/upload-folder', [UploadFileController::class, 'Folder']);
     Route::get('/v1/list-data', [UploadFileController::class, 'getListData']);

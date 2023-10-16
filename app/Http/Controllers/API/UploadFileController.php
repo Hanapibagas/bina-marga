@@ -79,7 +79,22 @@ class UploadFileController extends Controller
             $fileExtension = pathinfo($dataCenter->folder_name, PATHINFO_EXTENSION);
 
             $fileType = 'folder';
-            if (in_array($fileExtension, ['pdf', 'xls', 'xlsx', 'doc', 'docx', 'jpeg', 'jpg', 'png'])) {
+            if (in_array($fileExtension, [
+                'docx', 'doc',
+                'pdf', 'doc',
+                'ppt', 'txt',
+                'pptx', 'ppt',
+                'xlsx', 'xls',
+                'jpg', 'png',
+                'jpeg', 'gif',
+                'svg', 'webp',
+                'mp4', 'avi',
+                'mkv', 'wmv',
+                'mpg', 'mpeg',
+                'ogg', '3gp',
+                'mp3', 'wav',
+                'sql', 'html'
+            ])) {
                 $fileType = $fileExtension;
             }
 

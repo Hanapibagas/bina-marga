@@ -1,25 +1,26 @@
 <?php
 
+use App\Http\Controllers\API\DetailsFolderController;
 use App\Http\Controllers\API\LoginController;
 use App\Http\Controllers\API\UploadFileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
 Route::post('/v1/login', [LoginController::class, 'login']);
 
-Route::post('/v1/upload-file', [UploadFileController::class, 'storeFile']);
+Route::middleware('auth:api')->group(function () {
+    Route::get('/v1/details-user', [LoginController::class, 'getDetailsUser']);
+    Route::post('/v1/update-password', [LoginController::class, 'postPassword']);
+    Route::put('/v1/update-profile', [LoginController::class, 'putUpdateProfile']);
+
+    Route::post('/v1/upload-file', [UploadFileController::class, 'storeFile']);
+    Route::post('/v1/upload-folder', [UploadFileController::class, 'Folder']);
+    Route::get('/v1/list-data', [UploadFileController::class, 'getListData']);
+    Route::get('/v1/list-folder', [UploadFileController::class, 'getListFoder']);
+    Route::get('/v1/list-file', [UploadFileController::class, 'getListFile']);
+    Route::put('/v1/update-folder/{id}', [UploadFileController::class, 'putEditFolder']);
+    Route::put('/v1/update-file/{id}', [UploadFileController::class, 'putEditStatus']);
+
+    Route::get('/v1/details/{id}', [DetailsFolderController::class, 'getDetails']);
+});

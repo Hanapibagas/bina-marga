@@ -16,12 +16,16 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email');
             $table->string('nama_penanggung_jawab');
             $table->string('nip_oprator');
-            $table->string('api_token')->nullable();
             $table->string('google_id')->nullable();
-            $table->string('roles')->nullable();
+            $table->string('roles');
+            $table->string('permission_edit');
+            $table->string('permission_delete');
+            $table->string('permission_upload');
+            $table->string('permission_create');
+            $table->string('permission_download');
             $table->string('picture')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

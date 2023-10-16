@@ -24,6 +24,7 @@ Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])-
 
 // Route untuk super admin
 Route::post('/tambah-pengguna', [TambahPenggunaController::class, 'getStorePengguna'])->name('get.Tambah.Pengguna');
+Route::put('/tambah-pengguna/edit/{id}', [TambahPenggunaController::class, 'putUpdatepengguna'])->name('putUpdatepengguna');
 Route::get('/daftar-pengguna', [DaftarPenggunaController::class, 'getIndex'])->name('get.Index.Pengguna');
 Route::get('/setting', [SettingProfileController::class, 'getIndex'])->name('get.Index.Setting');
 Route::put('/setting/update-password', [SettingProfileController::class, 'postUpdatePassword'])->name('put.Password.User');
@@ -34,6 +35,7 @@ Route::put('/pengumuman/update/{id}', [PengumumanController::class, 'putPengumum
 Route::delete('/pengumuman/delete/{id}', [PengumumanController::class, 'deletePengumuman'])->name('delete.Pengumuman');
 
 // routeu untuk semua akun
+Route::get('/record-download/file/{id}', [UploadFileController::class, 'recordActivity1'])->name('recordActivity');
 Route::post('/tambah-folder', [UploadFileController::class, 'storeFolder'])->name('post.Folder');
 Route::post('/tambah-dalam-folder', [UploadFileController::class, 'postNameFolder'])->name('post.Dalam.Folder');
 Route::post('/tambah-dalam-folder-file', [UploadFileController::class, 'postNameFile'])->name('post.Dalam.Folder.File');

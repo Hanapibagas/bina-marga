@@ -11,7 +11,7 @@
         <nav class="navbar navbar-expand-lg navbar-light p-0">
             <div class="iq-search-bar">
                 <form action="#" class="searchbox">
-                    <input type="text" class="text search-input" id="search-input" placeholder="Cari file anda">
+                    <input type="text" class="text search-input" id="search-input" placeholder="Cari data anda">
                     <a class="search-link" href="#"><i class="ri-search-line"></i></a>
                 </form>
             </div>
@@ -35,18 +35,20 @@
                         <img style="margin-right: 10px;" src="{{ Auth::user()->picture }}" width="40"
                             class="rounded-circle">
                         @else
-                        <img style="margin-right: 10px;" src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}"
-                            width="40" class="rounded-circle" />
+                        <img style="margin-right: 10px;"
+                            src="https://ui-avatars.com/api/?name={{ Auth::user()->nama_penanggung_jawab }}" width="40"
+                            class="rounded-circle" />
                         @endif
                         <div class="caption">
-                            <h6 class="mb-0 line-height"> {{ Auth::user()->name }}</h6>
+                            <h6 class="mb-0 line-height"> {{ Auth::user()->nama_penanggung_jawab }}</h6>
                         </div>
                     </a>
                     <div class="iq-sub-dropdown iq-user-dropdown">
                         <div class="iq-card shadow-none m-0">
                             <div class="iq-card-body p-0 ">
                                 <div class="bg-primary p-3">
-                                    <h5 class="mb-0 text-white line-height">Hallo {{ Auth::user()->name }}</h5>
+                                    <h5 class="mb-0 text-white line-height">Hallo {{ Auth::user()->nama_penanggung_jawab
+                                        }}</h5>
                                 </div>
                                 {{-- <a href="profile.html" class="iq-sub-card iq-bg-primary-hover">
                                     <div class="media align-items-center">

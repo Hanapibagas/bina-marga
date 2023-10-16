@@ -6,7 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -23,8 +23,12 @@ class User extends Authenticatable
         'nama_penanggung_jawab',
         'nip_oprator',
         'google_id',
-        'api_token',
         'roles',
+        'permission_edit',
+        'permission_delete',
+        'permission_upload',
+        'permission_create',
+        'permission_download',
         'picture',
         'password',
     ];

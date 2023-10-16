@@ -121,6 +121,7 @@ session(['announcement' => true]);
                                 <i style="font-size: 30px; margin-right: 30px;" class="ri-add-line"></i>
                             </span>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton5">
+                                @if (Auth::user()->roles == 'super_admin')
                                 <a style="margin-top: 10px;" class="dropdown-item" data-toggle="modal"
                                     data-target="#exampleModalCenter">
                                     <i style="font-size: 25px; " class="ri-folders-fill"></i>Folder
@@ -130,11 +131,20 @@ session(['announcement' => true]);
                                 <a style="margin-bottom: 10px;" class="dropdown-item" data-toggle="modal"
                                     data-target="#exampleModalCenterFile"><i style="font-size: 25px;"
                                         class="ri-file-fill"></i>File Baru +</a>
-                                {{--
-                                <hr> --}}
-                                {{-- <a style="margin-bottom: 10px;" class="dropdown-item" data-toggle="modal"
-                                    data-target="#exampleModalCenterUser"><i style="font-size: 25px;"
-                                        class="ri-user-fill"></i>Pengguna Baru +</a> --}}
+                                @elseif (Auth::user()->permission_create)
+                                <a style="margin-top: 10px;" class="dropdown-item" data-toggle="modal"
+                                    data-target="#exampleModalCenter">
+                                    <i style="font-size: 25px; " class="ri-folders-fill"></i>Folder
+                                    Baru +
+                                </a>
+                                <hr>
+                                <a style="margin-bottom: 10px;" class="dropdown-item" data-toggle="modal"
+                                    data-target="#exampleModalCenterFile"><i style="font-size: 25px;"
+                                        class="ri-file-fill"></i>File Baru +</a>
+                                @else
+                                <p style="margin-left: 10px; font-size: 15px; margin-right: 10px;">Anda Tidak Memiliki
+                                    Akses</p>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -146,7 +156,7 @@ session(['announcement' => true]);
                                 <tr>
                                     <th scope="col">Nama</th>
                                     @if (Auth::user()->roles == 'super_admin')
-                                    <th scope="col">Aktivasi Pengguna</th>
+                                    <th scope="col">Nama Penanggung Jawab</th>
                                     @endif
                                     <th scope="col">Tanggal</th>
                                     <th scope="col"></th>
@@ -174,10 +184,15 @@ session(['announcement' => true]);
                                             $datas->folder_name }}
                                         </a>
                                     </td>
+                                    @if (Auth::check())
                                     @if (Auth::user()->roles == 'super_admin')
-                                    <td>{{ $datas->Users->name }}</td>
+                                    <td>{{ $datas->Users->nama_penanggung_jawab }}</td>
                                     @endif
-                                    <td>{{ date('d F Y', strtotime($datas->tanggal)) }}</td>
+                                    @endif
+                                    <td>
+                                        {{ date('d F Y', strtotime($datas->tanggal)) }},
+                                        <i>{{ $datas->created_at->diffForHumans() }}</i>
+                                    </td>
                                     <td>
                                         <div class="iq-card-header-toolbar d-flex align-items-center">
                                             <div class="dropdown">
@@ -187,6 +202,7 @@ session(['announcement' => true]);
                                                 </span>
                                                 <div class="dropdown-menu dropdown-menu-right"
                                                     aria-labelledby="dropdownMenuButton5">
+                                                    @if (Auth::user()->roles == 'super_admin')
                                                     <a class="dropdown-item" data-toggle="modal"
                                                         data-target="#editModal{{ $datas->id }}"><i
                                                             style="font-size: 25px;"
@@ -201,6 +217,41 @@ session(['announcement' => true]);
                                                                 class="ri-delete-bin-6-fill mr-2"></i>Pindahkan ke
                                                             sampah</button>
                                                     </form>
+                                                    @elseif (Auth::user()->permission_edit &&
+                                                    Auth::user()->permission_delete)
+                                                    <a class="dropdown-item" data-toggle="modal"
+                                                        data-target="#editModal{{ $datas->id }}"><i
+                                                            style="font-size: 25px;"
+                                                            class="ri-pencil-fill mr-2"></i>Edit</a>
+                                                    <hr>
+                                                    <form action="{{ route('put.Update.Status', $datas->id) }}"
+                                                        method="POST">
+                                                        @method('PUT')
+                                                        @csrf
+                                                        <button type="submit" class="dropdown-item"><i
+                                                                style="font-size: 25px;"
+                                                                class="ri-delete-bin-6-fill mr-2"></i>Pindahkan ke
+                                                            sampah</button>
+                                                    </form>
+                                                    @elseif (Auth::user()->permission_edit)
+                                                    <a class="dropdown-item" data-toggle="modal"
+                                                        data-target="#editModal{{ $datas->id }}"><i
+                                                            style="font-size: 25px;"
+                                                            class="ri-pencil-fill mr-2"></i>Edit</a>
+                                                    @elseif (Auth::user()->permission_delete)
+                                                    <form action="{{ route('put.Update.Status', $datas->id) }}"
+                                                        method="POST">
+                                                        @method('PUT')
+                                                        @csrf
+                                                        <button type="submit" class="dropdown-item"><i
+                                                                style="font-size: 25px;"
+                                                                class="ri-delete-bin-6-fill mr-2"></i>Pindahkan ke
+                                                            sampah</button>
+                                                    </form>
+                                                    @else
+                                                    <p style="margin-left: 10px;">Anda Tidak
+                                                        Memiliki Akses</p>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -281,10 +332,15 @@ session(['announcement' => true]);
                                         </a>
                                         @endif
                                     </td>
+                                    @if (Auth::check())
                                     @if (Auth::user()->roles == 'super_admin')
-                                    <td>{{ $datas->Users->name }}</td>
+                                    <td>{{ $datas->Users->nama_penanggung_jawab }}</td>
                                     @endif
-                                    <td>{{ date('d F Y', strtotime($datas->tanggal)) }}</td>
+                                    @endif
+                                    <td>
+                                        {{ $datas->created_at->format('d F Y') }},
+                                        <i>{{ $datas->created_at->diffForHumans() }}</i>
+                                    </td>
                                     <td>
                                         <div class="iq-card-header-toolbar d-flex align-items-center">
                                             <div class="dropdown">
@@ -294,8 +350,31 @@ session(['announcement' => true]);
                                                 </span>
                                                 <div class="dropdown-menu dropdown-menu-right"
                                                     aria-labelledby="dropdownMenuButton5">
-                                                    <a class="dropdown-item" href="storage/{{ $datas->folder_name }}"
-                                                        download><i style="font-size: 25px;"
+                                                    @if (Auth::user()->roles == 'super_admin')
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('recordActivity', $datas->id) }}"><i
+                                                            style="font-size: 25px;"
+                                                            class="ri-file-download-fill mr-2"></i>Download</a>
+                                                    <hr>
+                                                    <a class="dropdown-item" data-toggle="modal"
+                                                        data-target="#logModal{{ $datas->id }}"
+                                                        ><i style=" font-size: 25px;"
+                                                        class="ri-file-list-2-fill mr-2"></i>Log Data</a>
+                                                    <hr>
+                                                    <form action="{{ route('put.Update.Status', $datas->id) }}"
+                                                        method="POST">
+                                                        @method('PUT')
+                                                        @csrf
+                                                        <button type="submit" class="dropdown-item"><i
+                                                                style="font-size: 25px;"
+                                                                class="ri-delete-bin-6-fill mr-2"></i>Pindahkan ke
+                                                            sampah</button>
+                                                    </form>
+                                                    @elseif (Auth::user()->permission_download &&
+                                                    Auth::user()->permission_delete)
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('recordActivity', $datas->id) }}"><i
+                                                            style="font-size: 25px;"
                                                             class="ri-file-download-fill mr-2"></i>Download</a>
                                                     <hr>
                                                     <form action="{{ route('put.Update.Status', $datas->id) }}"
@@ -307,11 +386,65 @@ session(['announcement' => true]);
                                                                 class="ri-delete-bin-6-fill mr-2"></i>Pindahkan ke
                                                             sampah</button>
                                                     </form>
+                                                    @elseif (Auth::user()->permission_download)
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('recordActivity', $datas->id) }}">
+                                                        <i style="font-size: 25px;"
+                                                            class="ri-file-download-fill mr-2"></i>Download</a>
+                                                    @elseif (Auth::user()->permission_delete)
+                                                    <form action="{{ route('put.Update.Status', $datas->id) }}"
+                                                        method="POST">
+                                                        @method('PUT')
+                                                        @csrf
+                                                        <button type="submit" class="dropdown-item"><i
+                                                                style="font-size: 25px;"
+                                                                class="ri-delete-bin-6-fill mr-2"></i>Pindahkan ke
+                                                            sampah</button>
+                                                    </form>
+                                                    @else
+                                                    <p style="margin-left: 10px;">Anda Tidak
+                                                        Memiliki Akses</p>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
+
+                                @php
+                                $fileId = $datas->id;
+                                $log = App\Models\Ativitas::where('file_id', $fileId)->get();
+                                $download = App\Models\DownloadLog::where('file_id', $fileId)->get();
+                                @endphp
+                                <div class="modal fade" id="logModal{{ $datas->id }}" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Daftar Aktivitas Data
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label for="">Nama yang Upload File</label>
+                                                    @foreach ( $log as $logs )
+                                                    <h4>{{ $logs->Users->nama_penanggung_jawab }}</h4>
+                                                    @endforeach
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="">Nama yang Download File</label>
+                                                    @foreach ($download as $downloadLog)
+                                                    <h4>{{ $downloadLog->Users->nama_penanggung_jawab }}</h4>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 @endforeach
                             </tbody>
                         </table>
@@ -425,6 +558,7 @@ session(['announcement' => true]);
 @endsection
 
 @push('js')
+
 <script>
     const userRoleSelect = document.getElementById('userRole');
         const additionalFieldsDiv = document.getElementById('additionalFields');

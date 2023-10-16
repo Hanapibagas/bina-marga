@@ -26,6 +26,7 @@
                                 <i style="font-size: 30px; margin-right: 30px;" class="ri-add-line"></i>
                             </span>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton5">
+                                @if (Auth::user()->roles == 'super_admin')
                                 <a style="margin-top: 10px;" class="dropdown-item" data-toggle="modal"
                                     data-target="#exampleModalCenter">
                                     <i style="font-size: 25px; " class="ri-folders-fill"></i>Folder
@@ -35,11 +36,20 @@
                                 <a style="margin-bottom: 10px;" class="dropdown-item" data-toggle="modal"
                                     data-target="#exampleModalCenterFile"><i style="font-size: 25px;"
                                         class="ri-file-fill"></i>File Baru +</a>
-                                {{--
+                                @elseif (Auth::user()->permission_create)
+                                <a style="margin-top: 10px;" class="dropdown-item" data-toggle="modal"
+                                    data-target="#exampleModalCenter">
+                                    <i style="font-size: 25px; " class="ri-folders-fill"></i>Folder
+                                    Baru +
+                                </a>
                                 <hr>
                                 <a style="margin-bottom: 10px;" class="dropdown-item" data-toggle="modal"
-                                    data-target="#exampleModalCenterUser"><i style="font-size: 25px;"
-                                        class="ri-user-fill"></i>Pengguna Baru +</a> --}}
+                                    data-target="#exampleModalCenterFile"><i style="font-size: 25px;"
+                                        class="ri-file-fill"></i>File Baru +</a>
+                                @else
+                                <p style="margin-left: 10px; font-size: 15px; margin-right: 10px;">Anda Tidak Memiliki
+                                    Akses</p>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -92,6 +102,7 @@
                                                 </span>
                                                 <div class="dropdown-menu dropdown-menu-right"
                                                     aria-labelledby="dropdownMenuButton5">
+                                                    @if (Auth::user()->roles == 'super_admin')
                                                     <a class="dropdown-item" data-toggle="modal"
                                                         data-target="#editModal{{ $datas->id }}"><i
                                                             style="font-size: 25px;"
@@ -106,6 +117,40 @@
                                                                 class="ri-delete-bin-6-fill mr-2"></i>Pindahkan ke
                                                             sampah</button>
                                                     </form>
+                                                    @elseif (Auth::user()->permission_edit &&
+                                                    Auth::user()->permission_delete)
+                                                    <a class="dropdown-item" data-toggle="modal"
+                                                        data-target="#editModal{{ $datas->id }}"><i
+                                                            style="font-size: 25px;"
+                                                            class="ri-pencil-fill mr-2"></i>Edit</a>
+                                                    <hr>
+                                                    <form action="{{ route('put.Update.Status', $datas->id) }}"
+                                                        method="POST">
+                                                        @method('PUT')
+                                                        @csrf
+                                                        <button type="submit" class="dropdown-item"><i
+                                                                style="font-size: 25px;"
+                                                                class="ri-delete-bin-6-fill mr-2"></i>Pindahkan ke
+                                                            sampah</button>
+                                                    </form @elseif (Auth::user()->permission_edit)
+                                                    <a class="dropdown-item" data-toggle="modal"
+                                                        data-target="#editModal{{ $datas->id }}"><i
+                                                            style="font-size: 25px;"
+                                                            class="ri-pencil-fill mr-2"></i>Edit</a>
+                                                    @elseif (Auth::user()->permission_delete)
+                                                    <form action="{{ route('put.Update.Status', $datas->id) }}"
+                                                        method="POST">
+                                                        @method('PUT')
+                                                        @csrf
+                                                        <button type="submit" class="dropdown-item"><i
+                                                                style="font-size: 25px;"
+                                                                class="ri-delete-bin-6-fill mr-2"></i>Pindahkan ke
+                                                            sampah</button>
+                                                    </form>
+                                                    @else
+                                                    <p style="margin-left: 10px;">Anda Tidak
+                                                        Memiliki Akses</p>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -199,8 +244,30 @@
                                                 </span>
                                                 <div class="dropdown-menu dropdown-menu-right"
                                                     aria-labelledby="dropdownMenuButton5">
+                                                    @if (Auth::user()->roles == 'super_admin')
                                                     <a class="dropdown-item" href="storage/{{ $datas->folder_name }}"
                                                         download><i style="font-size: 25px;"
+                                                            class="ri-file-download-fill mr-2"></i>Download</a>
+                                                    <hr>
+                                                    <a class="dropdown-item" data-toggle="modal"
+                                                        data-target="#logModal{{ $datas->id }}"><i
+                                                            style=" font-size: 25px;"
+                                                            class="ri-file-list-2-fill mr-2"></i>Log Data</a>
+                                                    <hr>
+                                                    <form action="{{ route('put.Update.Status', $datas->id) }}"
+                                                        method="POST">
+                                                        @method('PUT')
+                                                        @csrf
+                                                        <button type="submit" class="dropdown-item"><i
+                                                                style="font-size: 25px;"
+                                                                class="ri-delete-bin-6-fill mr-2"></i>Pindahkan ke
+                                                            sampah</button>
+                                                    </form>
+                                                    @elseif (Auth::user()->permission_download &&
+                                                    Auth::user()->permission_delete)
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('recordActivity', $datas->id) }}"><i
+                                                            style="font-size: 25px;"
                                                             class="ri-file-download-fill mr-2"></i>Download</a>
                                                     <hr>
                                                     <form action="{{ route('put.Update.Status', $datas->id) }}"
@@ -212,11 +279,65 @@
                                                                 class="ri-delete-bin-6-fill mr-2"></i>Pindahkan ke
                                                             sampah</button>
                                                     </form>
+                                                    @elseif (Auth::user()->permission_download)
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('recordActivity', $datas->id) }}"><i
+                                                            style="font-size: 25px;"
+                                                            class="ri-file-download-fill mr-2"></i>Download</a>
+                                                    @elseif (Auth::user()->permission_delete)
+                                                    <form action="{{ route('put.Update.Status', $datas->id) }}"
+                                                        method="POST">
+                                                        @method('PUT')
+                                                        @csrf
+                                                        <button type="submit" class="dropdown-item"><i
+                                                                style="font-size: 25px;"
+                                                                class="ri-delete-bin-6-fill mr-2"></i>Pindahkan ke
+                                                            sampah</button>
+                                                    </form>
+                                                    @else
+                                                    <p style="margin-left: 10px;">Anda Tidak
+                                                        Memiliki Akses</p>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
+
+                                @php
+                                $fileId = $datas->id;
+                                $log = App\Models\Ativitas::where('file_id', $fileId)->get();
+                                $download = App\Models\DownloadLog::where('file_id', $fileId)->get();
+                                @endphp
+                                <div class="modal fade" id="logModal{{ $datas->id }}" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Daftar Aktivitas Data
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label for="">Nama yang Upload File</label>
+                                                    @foreach ( $log as $logs )
+                                                    <h4>{{ $logs->Users->nama_penanggung_jawab }}</h4>
+                                                    @endforeach
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="">Nama yang Download File</label>
+                                                    @foreach ($download as $downloadLog)
+                                                    <h4>{{ $downloadLog->Users->nama_penanggung_jawab }}</h4>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 @endforeach
                             </tbody>
                         </table>
@@ -356,7 +477,129 @@
 @endsection
 
 @push('js')
+<script>
+    const userRoleSelect = document.getElementById('userRole');
+        const additionalFieldsDiv = document.getElementById('additionalFields');
+        const userEmailInput = document.getElementById('userEmail');
+        const userRolesInput = document.getElementById('userRoles');
+        const userPasswordInput = document.getElementById('userPassword');
+
+        userRoleSelect.addEventListener('change', function() {
+            if (userRoleSelect.value === 'Admin bidang/upt') {
+                additionalFieldsDiv.style.display = 'block';
+                userEmailInput.value = 'bidang/upt@gmail.com';
+                userRolesInput.value = 'bidang_upt';
+                userPasswordInput.value = '12345678';
+            } else if (userRoleSelect.value === 'Admin seksi') {
+                additionalFieldsDiv.style.display = 'block';
+                userEmailInput.value = 'seksi@gmail.com';
+                userRolesInput.value = 'seksi';
+                userPasswordInput.value = '12345678';
+            } else if (userRoleSelect.value === 'Admin staff') {
+                additionalFieldsDiv.style.display = 'block';
+                userEmailInput.value = 'staff@gmail.com';
+                userRolesInput.value = 'staff';
+                userPasswordInput.value = '12345678';
+            } else {
+                additionalFieldsDiv.style.display = 'none';
+            }
+        });
+</script>
+<script>
+    const fileInput = document.getElementById('fileInput');
+        const previewContainer = document.getElementById('previewContainer');
+
+        fileInput.addEventListener('change', function() {
+            previewContainer.innerHTML = '';
+
+            const files = fileInput.files;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const preview = document.createElement('img');
+                    preview.src = e.target.result;
+                    preview.style.maxWidth = '100%';
+                    preview.style.height = 'auto';
+                    previewContainer.appendChild(preview);
+                }
+
+                reader.readAsDataURL(file);
+            }
+        });
+</script>
+<script>
+    const chatIcon = document.getElementById('chat-icon');
+        const notificationsDropdown = document.getElementById('notifications-dropdown');
+
+        chatIcon.addEventListener('click', () => {
+            notificationsDropdown.classList.toggle('show-dropdown');
+        });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+            let announcement = document.querySelector(".announcement");
+            let overlay = document.querySelector(".overlay");
+            let closeButton = document.querySelector(".close");
+
+            if (announcement) {
+                document.body.appendChild(overlay);
+                document.body.appendChild(announcement);
+            }
+
+            closeButton.addEventListener('click', function() {
+                overlay.remove();
+                announcement.remove();
+            })
+        });
+
+        // Mengecek apakah overlay pernah ditampilkan sebelumnya
+        if (!localStorage.getItem('overlayShown')) {
+            // Jika belum pernah ditampilkan, maka tampilkan overlay
+            $(".overlay").show();
+
+            // Menandai bahwa overlay sudah ditampilkan
+            localStorage.setItem('overlayShown', 'true');
+        }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
+    integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $('.owl-carouselss').owlCarousel({
+            loop: true,
+            margin: 10,
+            dots: false,
+            nav: false,
+            autoplay: true,
+            autoplayTimeout: 7000,
+            autoplayHoverPause: true,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 1
+                },
+                1000: {
+                    items: 1
+                }
+            }
+        })
+</script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+</script>
+{{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -457,5 +700,5 @@
     chatIcon.addEventListener('click', () => {
         notificationsDropdown.classList.toggle('show-dropdown');
     });
-</script>
+</script> --}}
 @endpush

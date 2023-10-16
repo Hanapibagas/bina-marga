@@ -2,6 +2,16 @@
 
 @section('content')
 
+@if (session('error'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "{{ session('error') }}",
+    })
+</script>
+@endif
+
 @if (session('status'))
 <script>
     Swal.fire({
@@ -26,15 +36,6 @@
                                 <i style="font-size: 30px; margin-right: 30px;" class="ri-add-line"></i>
                             </span>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton5">
-                                {{-- <a style="margin-top: 10px;" class="dropdown-item" data-toggle="modal"
-                                    data-target="#exampleModalCenter">
-                                    <i style="font-size: 25px; " class="ri-folders-fill"></i>Folder
-                                    Baru +
-                                </a>
-                                <hr>
-                                <a class="dropdown-item" data-toggle="modal" data-target="#exampleModalCenterFile"><i
-                                        style="font-size: 25px;" class="ri-file-fill"></i>File Baru +</a>
-                                <hr> --}}
                                 <a style="margin-bottom: 10px; margin-top: 10px;" class="dropdown-item"
                                     data-toggle="modal" data-target="#exampleModalCenterUser"><i
                                         style="font-size: 25px;" class="ri-user-fill"></i>Pengguna Baru +</a>
@@ -47,17 +48,46 @@
                         <table id="datatable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Nama Pengguna</th>
+                                    <th>Nama Penanggung Jawab</th>
+                                    <th>Nama Bidang</th>
                                     <th>Email</th>
-                                    <th>Jabatan</th>
+                                    <th>Role Oprator</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ( $pengguna as $penggunas )
                                 <tr>
+                                    <td>{{ $penggunas->nama_penanggung_jawab }}</td>
                                     <td>{{ $penggunas->name }}</td>
                                     <td>{{ $penggunas->email }}</td>
                                     <td>{{ $penggunas->roles }}</td>
+                                    <td>
+                                        <div class="iq-card-header-toolbar d-flex align-items-center">
+                                            <div class="dropdown">
+                                                <span class="dropdown-toggle text-primary" id="dropdownMenuButton5"
+                                                    data-toggle="dropdown">
+                                                    <i style="margin-left: 30px;" class="ri-more-2-fill"></i>
+                                                </span>
+                                                <div class="dropdown-menu dropdown-menu-right"
+                                                    aria-labelledby="dropdownMenuButton5">
+                                                    <a class="dropdown-item" data-toggle="modal"
+                                                        data-target="#exampleModalCenterUser{{ $penggunas->id }}"><i
+                                                            style="font-size: 25px;"
+                                                            class="ri-pencil-fill mr-2"></i>Edit</a>
+                                                    <hr>
+                                                    <form action="{{ route('put.Update.Status', $penggunas->id) }}"
+                                                        method="POST">
+                                                        @method('PUT')
+                                                        @csrf
+                                                        <button type="submit" class="dropdown-item"><i
+                                                                style="font-size: 25px;"
+                                                                class="ri-delete-bin-6-fill mr-2"></i>Hapus</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -97,12 +127,90 @@
                             <input type="text" name="nama_penanggung_jawab" required class="form-control" value="">
                         </div>
                         <div class="form-group">
-                            <label>NIP Oprator</label>
+                            <label>NIP Penanggung Jawab</label>
                             <input type="number" name="nip_oprator" required class="form-control" value="">
                         </div>
                         <div class="form-group">
-                            <label for="Email">Email</label>
-                            <input type="email" name="email" id="userEmail" class="form-control" value="" readonly>
+                            <label>Email Penanggung Jawab</label>
+                            <input type="email" name="email" class="form-control" value="">
+                        </div>
+                        <div class="form-group">
+                            <label>Tugas Oprator</label>
+                            <p class="fw-bold">Edit</p>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" value="1" name="permission_edit"
+                                    id="radioExample1" />
+                                <label class="form-check-label" for="radioExample1">
+                                    Ya
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" value="0" name="permission_edit"
+                                    id="radioExample2" />
+                                <label class="form-check-label" for="radioExample2">
+                                    Tidak
+                                </label>
+                            </div>
+                            <p class="fw-bold">Hapus</p>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" value="1" name="permission_delete"
+                                    id="radioExample1" />
+                                <label class="form-check-label" for="radioExample1">
+                                    Ya
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" value="0" name="permission_delete"
+                                    id="radioExample2" />
+                                <label class="form-check-label" for="radioExample2">
+                                    Tidak
+                                </label>
+                            </div>
+                            <p class="fw-bold">Upload</p>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" value="1" name="permission_upload"
+                                    id="radioExample1" />
+                                <label class="form-check-label" for="radioExample1">
+                                    Ya
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" value="0" name="permission_upload"
+                                    id="radioExample2" />
+                                <label class="form-check-label" for="radioExample2">
+                                    Tidak
+                                </label>
+                            </div>
+                            <p class="fw-bold">Update</p>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" value="1" name="permission_create"
+                                    id="radioExample1" />
+                                <label class="form-check-label" for="radioExample1">
+                                    Ya
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" value="0" name="permission_create"
+                                    id="radioExample1" />
+                                <label class="form-check-label" for="radioExample1">
+                                    Tidak
+                                </label>
+                            </div>
+                            <p class="fw-bold">Download</p>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" value="1" name="permission_download"
+                                    id="radioExample1" />
+                                <label class="form-check-label" for="radioExample1">
+                                    Ya
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" value="0" name="permission_download"
+                                    id="radioExample2" />
+                                <label class="form-check-label" for="radioExample2">
+                                    Tidak
+                                </label>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="Email">Jabatan</label>
@@ -122,10 +230,137 @@
         </div>
     </div>
 </div>
+
+@foreach ( $pengguna as $value )
+<div class="modal fade" id="exampleModalCenterUser{{ $value->id }}" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Edit Tugas Pengguna</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('putUpdatepengguna', $value->id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Tugas Oprator {{ $value->nama_penanggung_jawab }}</label>
+                        <p class="fw-bold">Edit</p>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" value="1" name="permission_edit"
+                                id="radioExample1" />
+                            <label class="form-check-label" for="radioExample1">
+                                Ya
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" value="0" name="permission_edit"
+                                id="radioExample2" />
+                            <label class="form-check-label" for="radioExample2">
+                                Tidak
+                            </label>
+                        </div>
+                        <p class="fw-bold">Hapus</p>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" value="1" name="permission_delete"
+                                id="radioExample1" />
+                            <label class="form-check-label" for="radioExample1">
+                                Ya
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" value="0" name="permission_delete"
+                                id="radioExample2" />
+                            <label class="form-check-label" for="radioExample2">
+                                Tidak
+                            </label>
+                        </div>
+                        <p class="fw-bold">Upload</p>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" value="1" name="permission_upload"
+                                id="radioExample1" />
+                            <label class="form-check-label" for="radioExample1">
+                                Ya
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" value="0" name="permission_upload"
+                                id="radioExample2" />
+                            <label class="form-check-label" for="radioExample2">
+                                Tidak
+                            </label>
+                        </div>
+                        <p class="fw-bold">Update</p>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" value="1" name="permission_create"
+                                id="radioExample1" />
+                            <label class="form-check-label" for="radioExample1">
+                                Ya
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" value="0" name="permission_create"
+                                id="radioExample1" />
+                            <label class="form-check-label" for="radioExample1">
+                                Tidak
+                            </label>
+                        </div>
+                        <p class="fw-bold">Download</p>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" value="1" name="permission_download"
+                                id="radioExample1" />
+                            <label class="form-check-label" for="radioExample1">
+                                Ya
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" value="0" name="permission_download"
+                                id="radioExample2" />
+                            <label class="form-check-label" for="radioExample2">
+                                Tidak
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
+
 @endsection
 
 @push('js')
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var userRoleSelect = document.getElementById('userRole');
+        var userRolesInput = document.getElementById('userRoles');
+
+        userRoleSelect.addEventListener('change', function () {
+            var selectedOption = userRoleSelect.options[userRoleSelect.selectedIndex];
+            var selectedValue = selectedOption.value;
+            var selectedText = selectedOption.text;
+
+            if (selectedValue === 'Admin bidang/upt') {
+                userRolesInput.value = 'bidang_upt';
+            } else if (selectedValue === 'Admin seksi') {
+                userRolesInput.value = 'seksi';
+            } else if (selectedValue === 'Admin staff') {
+                userRolesInput.value = 'staff';
+            } else {
+                userRolesInput.value = '';
+            }
+        });
+    });
+</script>
+{{-- <script>
     const userRoleSelect = document.getElementById('userRole');
     const additionalFieldsDiv = document.getElementById('additionalFields');
     const userEmailInput = document.getElementById('userEmail');
@@ -152,7 +387,7 @@
             additionalFieldsDiv.style.display = 'none';
         }
     });
-</script>
+</script> --}}
 <script>
     const fileInput = document.getElementById('fileInput');
     const previewContainer = document.getElementById('previewContainer');

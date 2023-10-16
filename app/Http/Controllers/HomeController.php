@@ -17,14 +17,30 @@ class HomeController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->hasRole('super_admin')) {
+        if ($user->roles == 'super_admin') {
             $data = DataCenter::where('parent_name_id', null)
                 ->where('is_recycle', true)
                 ->get();
-        } else {
-            $data = DataCenter::where('users_id', $user->id)
-                ->where('parent_name_id', null)
+        } elseif ($user->roles == 'bidang_upt') {
+            $data = DataCenter::where('parent_name_id', null)
                 ->where('is_recycle', true)
+                ->whereHas('Users',  function ($query) {
+                    $query->where('roles', 'bidang_upt');
+                })
+                ->get();
+        } elseif ($user->roles == 'seksi') {
+            $data = DataCenter::where('parent_name_id', null)
+                ->where('is_recycle', true)
+                ->whereHas('Users',  function ($query) {
+                    $query->where('roles', 'seksi');
+                })
+                ->get();
+        } elseif ($user->roles == 'staff') {
+            $data = DataCenter::where('parent_name_id', null)
+                ->where('is_recycle', true)
+                ->whereHas('Users',  function ($query) {
+                    $query->where('roles', 'staff');
+                })
                 ->get();
         }
 
@@ -44,7 +60,7 @@ class HomeController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->hasRole('super_admin')) {
+        if ($user->name === 'super_admin') {
             $data = DataCenter::where('parent_name_id', null)
                 ->get();
         } else {
@@ -53,7 +69,7 @@ class HomeController extends Controller
                 ->get();
         }
 
-        if ($user->hasRole('super_admin')) {
+        if ($user->name === 'super_admin') {
             $data = DataCenter::where('users_id', $user->id)
                 ->where('is_recycle', 0)
                 ->get();

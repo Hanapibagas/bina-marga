@@ -3,29 +3,122 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        $login = Auth::Attempt($request->all());
-        if ($login) {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), 400);
+        }
+
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
-            $user->api_token = Str::random(100);
-            $user->save();
+            $success['token'] =  $user->createToken('MyApp')->accessToken;
+            $success['id'] =  $user->id;
+            $success['roles'] =  $user->roles;
+            $success['name'] =  $user->name;
 
             return response()->json([
-                'response_code' => 200,
-                'data' => $user
-            ]);
+                'message' => 'Login successful.',
+                'data' => $success
+            ], 200);
         } else {
             return response()->json([
-                'response_code' => 404,
-                'message' => 'Username atau Password Tidak Ditemukan!'
-            ]);
+                'message' => 'Login failed.',
+                'error' => 'Mohon maaf email atau password yang dimasukkan salah'
+            ], 401);
         }
+    }
+
+    public function getDetailsUser()
+    {
+        $user = Auth::user();
+
+        $foto = null;
+        if ($user->picture) {
+            $foto = asset('storage/' . $user->picture);
+        }
+
+        $user->picture = $foto;
+
+        return response()->json([
+            'message' => 'Successful.',
+            'user' => $user
+        ], 200);
+    }
+
+    public function putUpdateProfile(Request $request)
+    {
+        $user = Auth::user();
+        $validator = Validator::make($request->all(), [
+            'nama_penanggung_jawab' => 'string|max:255',
+            'nip_oprator' => 'string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        if ($request->has('nama_penanggung_jawab')) {
+            $user->nama_penanggung_jawab = $request->input('nama_penanggung_jawab');
+        }
+
+        if ($request->has('nip_oprator')) {
+            $user->nip_oprator = $request->input('nip_oprator');
+        }
+
+        if ($request->file('picture')) {
+            $uploadedFile = $request->file('picture');
+            $originalFileName = $uploadedFile->getClientOriginalName();
+
+            $file = $uploadedFile->storeAs('foto-profile', $originalFileName, 'public');
+            $user->picture = $file;
+        }
+
+        $user->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Profile updated successfully',
+            'data' => $user,
+        ], 200);
+    }
+
+    public function postPassword(Request $request)
+    {
+        $user = Auth::user();
+
+        // Validasi permintaan
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        // Memeriksa kata sandi saat ini
+        if (!Hash::check($request->input('current_password'), $user->password)) {
+            return response()->json(['message' => 'Kata sandi saat ini tidak cocok.'], 400);
+        }
+
+        // Memperbarui kata sandi
+        $user->password = Hash::make($request->input('new_password'));
+        $user->save();
+
+        return response()->json(['message' => 'Kata sandi berhasil diperbarui.']);
     }
 }

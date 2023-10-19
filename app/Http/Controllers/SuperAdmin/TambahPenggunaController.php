@@ -32,13 +32,15 @@ class TambahPenggunaController extends Controller
     {
         $user = User::where('id', $id)->first();
 
-        $user->update([
-            'permission_edit' => request('permission_edit'),
-            'permission_delete' => request('permission_delete'),
-            'permission_upload' => request('permission_upload'),
-            'permission_create' => request('permission_create'),
-            'permission_download' => request('permission_download')
+        $data = $request->only([
+            'permission_edit',
+            'permission_delete',
+            'permission_upload',
+            'permission_create',
+            'permission_download'
         ]);
+
+        $user->update($data);
 
         return redirect()->back()->with('status', 'Pengguna berhasil diperbarui.');
     }

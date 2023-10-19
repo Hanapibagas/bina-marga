@@ -301,11 +301,90 @@ session(['announcement' => true]);
                                             <i style="font-size: 30px; color: #089bab" class="ri-image-2-fill"></i>
                                             {{ substr($datas->folder_name, 12) }}
                                         </a>
-                                        @elseif (preg_match('/\.mp4$/i', $datas->folder_name))
-                                        <a target="_blank" href="URL_KE_VIDEO_MP4_DISINI">
-                                            <i style="font-size: 30px;" class="ri-video-fill"></i> {{
-                                            substr($datas->folder_name, 12) }}
+                                        <div class="modal fade" id="myModal-{{ $datas->id }}" tabindex="-1"
+                                            role="dialog" aria-labelledby="modalLabel-{{ $datas->id }}"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">{{ substr($datas->folder_name, 12) }}
+                                                        </h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Tutup">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <img style="width: 100%;"
+                                                            src="{{ Storage::url($datas->folder_name) }}"
+                                                            alt="Gambar Modal">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        @elseif (preg_match('/\.mp3$/i', $datas->folder_name))
+                                        <a style="color: #089bab" alt="audio" data-toggle="modal"
+                                            data-target="#myModal-{{ $datas->id }}">
+                                            <i style="font-size: 30px;" class="ri-music-fill"></i>
+                                            {{ substr($datas->folder_name, 12) }}
                                         </a>
+                                        <div class="modal fade" id="myModal-{{ $datas->id }}" tabindex="-1"
+                                            role="dialog" aria-labelledby="modalLabel-{{ $datas->id }}"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">{{ substr($datas->folder_name, 12) }}
+                                                        </h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Tutup">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <audio controls>
+                                                            <source src="{{ asset('storage/'.$datas->folder_name) }}"
+                                                                type="audio/mpeg">
+                                                            Browser Anda tidak mendukung pemutaran audio.
+                                                        </audio>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        @elseif (preg_match('/\.mp4$/i', $datas->folder_name))
+                                        <a style="color: #089bab" alt="video" data-toggle="modal"
+                                            data-target="#myModal-{{ $datas->id }}">
+                                            <i style="font-size: 30px;" class="ri-video-fill"></i>
+                                            {{ substr($datas->folder_name, 12) }}
+                                        </a>
+
+                                        <div class="modal fade" id="myModal-{{ $datas->id }}" tabindex="-1"
+                                            role="dialog" aria-labelledby="modalLabel-{{ $datas->id }}"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">
+                                                            {{substr($datas->folder_name, 12) }}
+                                                            Modal</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Tutup">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <video style="width: 50%" controls autoplay>
+                                                            <source src="{{ asset('storage/'.$datas->folder_name) }}"
+                                                                type="video/mp4">
+                                                            Browser Anda tidak mendukung pemutaran video.
+                                                        </video>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         @else
                                         @php
                                         $extension = pathinfo($datas->folder_name, PATHINFO_EXTENSION);
@@ -319,6 +398,9 @@ session(['announcement' => true]);
                                         break;
                                         case 'docx':
                                         $iconClass = 'ri-file-word-fill';
+                                        break;
+                                        case 'pptx':
+                                        $iconClass = 'ri-file-ppt-fill';
                                         break;
                                         default:
                                         $iconClass = 'ri-file-fill';
@@ -357,9 +439,9 @@ session(['announcement' => true]);
                                                             class="ri-file-download-fill mr-2"></i>Download</a>
                                                     <hr>
                                                     <a class="dropdown-item" data-toggle="modal"
-                                                        data-target="#logModal{{ $datas->id }}"
-                                                        ><i style=" font-size: 25px;"
-                                                        class="ri-file-list-2-fill mr-2"></i>Log Data</a>
+                                                        data-target="#logModal{{ $datas->id }}"><i
+                                                            style=" font-size: 25px;"
+                                                            class="ri-file-list-2-fill mr-2"></i>Log Data</a>
                                                     <hr>
                                                     <form action="{{ route('put.Update.Status', $datas->id) }}"
                                                         method="POST">

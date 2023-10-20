@@ -24,5 +24,8 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/v1/update-folder/{id}', [UploadFileController::class, 'putEditFolder']);
     Route::put('/v1/update-file/{id}', [UploadFileController::class, 'putEditStatus']);
 
+    Route::get('/v1/log-data-folder/{id}', [UploadFileController::class, 'getLogFolder']);
+    Route::get('/v1/download-file/{id}', [UploadFileController::class, 'downloadFile']);
+
     Route::get('/v1/details/{id}', [DetailsFolderController::class, 'getDetails']);
 });

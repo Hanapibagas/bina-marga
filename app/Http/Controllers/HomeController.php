@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataCenter;
+use App\Models\LogEdit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -84,10 +85,17 @@ class HomeController extends Controller
 
     public function putEditFolder(Request $request, $id)
     {
+        $user = Auth::user();
+
         $update = DataCenter::where('id', $id)->first();
 
         $update->update([
             'folder_name' => $request->input('folder_name')
+        ]);
+
+        LogEdit::create([
+            'users_id' => $user->id,
+            'file_id' => $update->id
         ]);
 
         return redirect()->back()->with('status', 'Selamat data anda berhasil diperbarui');

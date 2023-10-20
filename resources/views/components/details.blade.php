@@ -108,6 +108,11 @@
                                                             style="font-size: 25px;"
                                                             class="ri-pencil-fill mr-2"></i>Edit</a>
                                                     <hr>
+                                                    <a class="dropdown-item" data-toggle="modal"
+                                                        data-target="#logModalEdit{{ $datas->id }}"><i
+                                                            style=" font-size: 25px;"
+                                                            class="ri-file-list-2-fill mr-2"></i>Log Data</a>
+                                                    <hr>
                                                     <form action="{{ route('put.Update.Status', $datas->id) }}"
                                                         method="POST">
                                                         @method('PUT')
@@ -186,6 +191,41 @@
                                                         Nama</button>
                                                 </div>
                                             </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @php
+                                $fileId = $datas->id;
+                                $log = App\Models\Ativitas::where('file_id', $fileId)->get();
+                                $download = App\Models\LogEdit::where('file_id', $fileId)->get();
+                                @endphp
+                                <div class="modal fade" id="logModalEdit{{ $datas->id }}" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Daftar Aktivitas Data
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label for="">Nama yang Buat Folder</label>
+                                                    @foreach ( $log as $logs )
+                                                    <h4>{{ $logs->Users->nama_penanggung_jawab }}</h4>
+                                                    @endforeach
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="">Nama yang Edit Folder</label>
+                                                    @foreach ($download as $downloadLog)
+                                                    <h4>{{ $downloadLog->Users->nama_penanggung_jawab }}</h4>
+                                                    @endforeach
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

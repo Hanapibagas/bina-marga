@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ativitas;
 use App\Models\DataCenter;
+use App\Models\DownloadLog;
+use App\Models\LogEdit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Lcobucci\JWT\Token\DataSet;
 
 class UploadFileController extends Controller
 {
@@ -30,6 +34,11 @@ class UploadFileController extends Controller
                 'tanggal' => date('Y-m-d'),
             ]);
 
+            Ativitas::create([
+                'users_id' => $user,
+                'file_id' => $DataCenter->id
+            ]);
+
             return response()->json([
                 'message' => 'Login successful.',
                 'data' => $DataCenter
@@ -48,6 +57,11 @@ class UploadFileController extends Controller
             'users_id' => $user,
             'parent_name_id' => $request->input('parent_name_id'),
             'tanggal' => date('Y-m-d'),
+        ]);
+
+        Ativitas::create([
+            'users_id' => $user,
+            'file_id' => $DataCenter->id
         ]);
 
         if ($DataCenter) {
@@ -204,14 +218,23 @@ class UploadFileController extends Controller
 
     public function putEditFolder(Request $request, $id)
     {
+        $user = Auth::user();
+
         $dataCenter = DataCenter::find($id);
 
         if (!$dataCenter) {
             return response()->json(['error' => 'DataCenter not found'], 404);
         }
 
-        $dataCenter->folder_name = $request->input('folder_name');
-        $dataCenter->save();
+        $dataCenter->update([
+            'folder_name' => $request->input('folder_name')
+        ]);
+
+        LogEdit::create([
+            'users_id' => $user->id,
+            'file_id' => $dataCenter->id
+        ]);
+
 
         return response()->json([
             'message' => 'DataCenter updated successfully',
@@ -233,6 +256,64 @@ class UploadFileController extends Controller
         return response()->json([
             'message' => 'DataCenter updated successfully',
             'data' => $dataCenter
+        ]);
+    }
+
+    public function getLogFolder($id)
+    {
+        $fileId = DataCenter::find($id);
+
+        $logAtivitas = Ativitas::where('file_id', $fileId->id)->get();
+        $logEdit = LogEdit::where('file_id', $fileId->id)->get();
+        $logDownload = DownloadLog::where('file_id', $fileId->id)->get();
+
+        $usersAtivitas = [];
+        $usersLogEdit = [];
+        $usersDownload = [];
+
+        foreach ($logAtivitas as $log) {
+            $usersAtivitas[] = [
+                'name' => $log->Users->nama_penanggung_jawab,
+            ];
+        }
+
+        foreach ($logEdit as $log) {
+            $usersLogEdit[] = [
+                'name' => $log->Users->nama_penanggung_jawab
+            ];
+        }
+
+        foreach ($logDownload as $log) {
+            $usersDownload[] = [
+                'name' => $log->Users->nama_penanggung_jawab,
+            ];
+        }
+
+        return response()->json([
+            'message' => 'DataCenter Log successfully',
+            'data' => [
+                'usersAtivitas' => $usersAtivitas,
+                'usersLogEdit' => $usersLogEdit,
+                'usersLogDownload' => $usersDownload,
+            ]
+        ]);
+    }
+
+    public function downloadFile($id)
+    {
+        $user = Auth::user();
+        $file = DataCenter::find($id);
+
+
+        $log = DownloadLog::create([
+            'users_id' => $user->id,
+            'file_id' => $file->id,
+        ]);
+
+
+        return response()->json([
+            'message' => 'Datacenter Log Download successfuly',
+            'data' => $log
         ]);
     }
 }

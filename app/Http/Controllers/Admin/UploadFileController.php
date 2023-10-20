@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Ativitas;
 use App\Models\DataCenter;
 use App\Models\DownloadLog;
+use App\Models\LogEdit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;

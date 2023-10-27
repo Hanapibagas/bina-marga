@@ -18,11 +18,15 @@
             style="height: 80vh">
             <ul id="iq-sidebar-toggle" class="iq-menu">
                 <hr>
-                <li class="{{ request()->is('dashboard') || request()->is('folder/*') ? 'active' : '' }}">
+                <li class="{{ request()->is('dashboard') ? 'active' : '' }}">
                     <a href="{{ route('home') }}" class="iq-waves-effect"><i
                             class="ri-home-2-fill"></i><span>Dashboard</span></a>
                 </li>
                 <hr>
+                <li class="{{ request()->is('dataset') || request()->is('folder/*') ? 'active' : '' }}">
+                    <a href="{{ route('dataset') }}" class="iq-waves-effect"><i
+                            class="ri-database-2-fill"></i><span>DataSet</span></a>
+                </li>
                 @if (Auth::check())
                 @if (Auth::user()->roles == 'super_admin')
                 <li class="{{ request()->is('daftar-pengguna') ? 'active' : '' }}">

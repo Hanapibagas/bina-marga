@@ -25,12 +25,13 @@ body {
     padding: 40px 30px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     perspective: 2700px;
+    border-radius: 20px;
 }
 
 .container .cover {
     position: absolute;
-    top: 0;
-    left: 50%;
+    top: 10%;
+    left: 55%;
     height: 100%;
     width: 50%;
     z-index: 98;
@@ -57,16 +58,6 @@ body {
     backface-visibility: hidden;
 }
 
-.container .cover::before,
-.container .cover::after {
-    content: '';
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    background: #089bab;
-    opacity: 0.5;
-    z-index: 12;
-}
 
 .container .cover::after {
     opacity: 0.3;

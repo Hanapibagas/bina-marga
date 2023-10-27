@@ -116,7 +116,6 @@ class UploadFileController extends Controller
 
     public function recordActivity1(Request $request, $id)
     {
-        // dd($request->all());
         $userID = auth()->user()->id;
 
         $file = DataCenter::where('id', $id)->first();

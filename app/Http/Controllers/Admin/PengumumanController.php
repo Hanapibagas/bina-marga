@@ -19,10 +19,16 @@ class PengumumanController extends Controller
     public function storePengumuman(Request $request)
     {
         $user = Auth::id();
+        if ($request->file('file')) {
+            $uploadFile = $request->file('file');
+            $originalFileName = $uploadFile->getClientOriginalName();
+
+            $file = $uploadFile->storeAs('pengumuman', $originalFileName, 'public');
+        }
         Pengumuman::create([
             'users_id' => $user,
             'judul' => $request->input('judul'),
-            'keterangan' => $request->input('keterangan'),
+            'file' => $file,
             'tannggal' => $request->input('tannggal'),
         ]);
 
@@ -32,10 +38,16 @@ class PengumumanController extends Controller
     public function putPengumuman(Request $request, $id)
     {
         $pengumuman = Pengumuman::where('id', $id)->first();
+        if ($request->file('file')) {
+            $uploadFile = $request->file('file');
+            $originalFileName = $uploadFile->getClientOriginalName();
+
+            $file = $uploadFile->storeAs('pengumuman', $originalFileName, 'public');
+        }
 
         $pengumuman->update([
             'judul' => $request->input('judul'),
-            'keterangan' => $request->input('keterangan'),
+            'file' => $file,
             'tannggal' => $request->input('tannggal'),
         ]);
 

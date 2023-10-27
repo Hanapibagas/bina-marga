@@ -17,20 +17,20 @@
 </head>
 
 <body>
-    <div class="container">
-        <input type="checkbox" id="flip" />
+    <div class="container d-flex flex-row">
         <div class="cover">
             <div class="front">
-                <img src="{{ asset('assets/login/images/frontImg.jpg') }}" alt="" />
+                <dotlottie-player src="https://lottie.host/1e57f55b-72be-461d-922c-a475cc80b161/vVGvSKgX4T.json"
+                    background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay>
+                </dotlottie-player>
             </div>
-            <div class="back">
-                <img class="backImg" src="{{ asset('assets/login/images/backImg.jpg') }}" alt="" />
-            </div>
+            {{-- <img src="{{ asset('assets/login/images/frontImg.jpg') }}" alt="" /> --}}
         </div>
         <div class="forms">
             <div class="form-content">
                 <div class="login-form">
-                    <div class="title">Login</div>
+                    <div class="title">Selamat Datang di Sisfo Datacenter Bina Marga</div>
+                    <p>Portal Informasi Datacenter Bina Marga yang Terpercaya</p>
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
                         <div class="input-boxes">
@@ -45,7 +45,7 @@
                             <div class="button input-box">
                                 <input type="submit" value="Login" />
                             </div>
-                            <style>
+                            {{-- <style>
                                 .google-login {
                                     margin-top: 20px;
                                     margin-left: 90px;
@@ -63,7 +63,7 @@
                                 .google-btn i {
                                     margin-right: 10px;
                                 }
-                            </style>
+                            </style> --}}
                             {{-- <div class="google-login">
                                 <a href="{{ route('get.Auth.Google') }}" style="text-decoration: #fff;color: black"
                                     class="google-btn">
@@ -75,42 +75,18 @@
                             </div> --}}
                         </div>
                     </form>
-
-                </div>
-                <div class="signup-form">
-                    <div class="title">Signup</div>
-                    <form action="" method="POST">
-                        @csrf
-                        <div class="input-boxes">
-                            <div class="input-box">
-                                <i class="fas fa-user"></i>
-                                <input type="text" name="name" placeholder="Enter your name" required />
-                            </div>
-                            <div class="input-box">
-                                <i class="fas fa-envelope"></i>
-                                <input type="text" name="email" placeholder="Enter your email" required />
-                            </div>
-                            <div class="input-box">
-                                <i class="fas fa-lock"></i>
-                                <input type="password" name="password" placeholder="Enter your password" required />
-                            </div>
-                            <div class="input-box">
-                                <i class="fas fa-lock"></i>
-                                <input type="password" name="password_confirmation"
-                                    placeholder="Enter your confirm password" required />
-                            </div>
-                            <div class="button input-box">
-                                <input type="submit" value="Sumbit" />
-                            </div>
-                            <div class="text sign-up-text">Apakah anda sudah mempunyai akun? <label for="flip">Login
-                                    now</label>
-                            </div>
-                        </div>
-                    </form>
+                    <div class="playstore-download">
+                        <p><a style="text-decoration: none" href="">Unduh Aplikasi Kami di Play Store</a></p>
+                        {{-- <a href="link_ke_aplikasi_di_Play_Store" target="_blank">
+                            <img style="width: 35px;" src="{{ asset('assets/login/game.png') }}" alt="Play Store" />
+                        </a> --}}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
 </body>
 
 </html>

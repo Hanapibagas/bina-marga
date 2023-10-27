@@ -6,6 +6,7 @@ use App\Models\DataCenter;
 use App\Models\LogEdit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -15,6 +16,79 @@ class HomeController extends Controller
     }
 
     public function index()
+    {
+        $datacenterFile = DataCenter::select(
+            DB::raw('DATE_FORMAT(tanggal, "%M %Y") as month_year'),
+            DB::raw('COUNT(*) as count')
+        )
+            ->where('folder_name', 'LIKE', 'folder-file%')
+            ->groupBy('month_year')
+            ->get();
+
+        $datacenterNonFile = DataCenter::select(
+            DB::raw('DATE_FORMAT(tanggal, "%M %Y") as month_year'),
+            DB::raw('COUNT(*) as count')
+        )
+            ->where('folder_name', 'NOT LIKE', 'folder-file%')
+            ->groupBy('month_year')
+            ->get();
+
+        $rolesToCount = ['bidang/upt', 'staff', 'seksi'];
+
+        $roleBidangUpt = 'bidang_upt';
+        $roleSeksi = 'seksi';
+        $roleStaff = 'staff';
+        $folderToExclude = 'folder-file%';
+        $folderToInclude = 'folder-file%';
+
+        $totalFolderBidangUpt = DataCenter::whereHas('Users', function ($query) use ($roleBidangUpt) {
+            $query->where('roles', $roleBidangUpt);
+        })
+            ->whereNotIn('id', function ($subQuery) use ($folderToExclude) {
+                $subQuery->from('data_centers')->select('id')->where('folder_name', 'like', $folderToExclude);
+            })
+            ->count();
+        $totalFolderSeksi = DataCenter::whereHas('Users', function ($query) use ($roleSeksi) {
+            $query->where('roles', $roleSeksi);
+        })
+            ->whereNotIn('id', function ($subQuery) use ($folderToExclude) {
+                $subQuery->from('data_centers')->select('id')->where('folder_name', 'like', $folderToExclude);
+            })
+            ->count();
+        $totalFolderStaff = DataCenter::whereHas('Users', function ($query) use ($roleStaff) {
+            $query->where('roles', $roleStaff);
+        })
+            ->whereNotIn('id', function ($subQuery) use ($folderToExclude) {
+                $subQuery->from('data_centers')->select('id')->where('folder_name', 'like', $folderToExclude);
+            })
+            ->count();
+        //
+        $totalFilerBidangUpt = DataCenter::whereHas('Users', function ($query) use ($roleBidangUpt) {
+            $query->where('roles', $roleBidangUpt);
+        })
+            ->whereIn('id', function ($subQuery) use ($folderToInclude) {
+                $subQuery->from('data_centers')->select('id')->where('folder_name', 'like', $folderToInclude);
+            })
+            ->count();
+        $totalFilerSeksi = DataCenter::whereHas('Users', function ($query) use ($roleSeksi) {
+            $query->where('roles', $roleSeksi);
+        })
+            ->whereIn('id', function ($subQuery) use ($folderToInclude) {
+                $subQuery->from('data_centers')->select('id')->where('folder_name', 'like', $folderToInclude);
+            })
+            ->count();
+        $totalFilerStaff = DataCenter::whereHas('Users', function ($query) use ($roleStaff) {
+            $query->where('roles', $roleStaff);
+        })
+            ->whereIn('id', function ($subQuery) use ($folderToInclude) {
+                $subQuery->from('data_centers')->select('id')->where('folder_name', 'like', $folderToInclude);
+            })
+            ->count();
+
+        return view('components.dashboard', compact('datacenterFile', 'totalFilerStaff', 'totalFolderStaff', 'totalFilerSeksi', 'totalFolderSeksi', 'datacenterNonFile', 'totalFolderBidangUpt', 'totalFilerBidangUpt'));
+    }
+
+    public function dataset()
     {
         $user = Auth::user();
 
@@ -45,7 +119,7 @@ class HomeController extends Controller
                 ->get();
         }
 
-        return view('components.dashboard', compact('data'));
+        return view('components.dataset', compact('data'));
     }
 
     public function getDetails(Request $request, $id)

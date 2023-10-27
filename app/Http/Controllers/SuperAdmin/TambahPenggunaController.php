@@ -11,7 +11,14 @@ class TambahPenggunaController extends Controller
 {
     public function getStorePengguna(Request $request)
     {
-        User::create([
+        // $characters = '0123456789';
+        // $randomCode = '#';
+        // for ($i = 0; $i < 3; $i++) {
+        //     $randomIndex = rand(0, strlen($characters) - 1);
+        //     $randomCode .= $characters[$randomIndex];
+        // }
+
+        $q = User::create([
             'name' => request('name'),
             'email' => request('email'),
             'nama_penanggung_jawab' => request('nama_penanggung_jawab'),

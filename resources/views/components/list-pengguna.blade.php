@@ -22,6 +22,21 @@
 </script>
 @endif
 
+<style>
+    .image-container {
+        position: relative;
+    }
+
+    .image-container img {
+        transition: transform 0.3s;
+    }
+
+    .image-container:hover img {
+        transform: scale(1.3);
+    }
+</style>
+
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12">
@@ -48,6 +63,9 @@
                         <table id="datatable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
+                                    <th>No</th>
+                                    <th>Foto</th>
+                                    <th>NIP Operator</th>
                                     <th>Nama Penanggung Jawab</th>
                                     <th>Nama Bidang</th>
                                     <th>Email</th>
@@ -56,8 +74,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ( $pengguna as $penggunas )
+                                @foreach ( $pengguna as $key => $penggunas )
                                 <tr>
+                                    <td>{{ $key+1 }}</td>
+                                    <td>
+                                        @if (Auth::check() && Auth::user()->picture)
+                                        <div class="image-container">
+                                            <img style="margin-right: 10px;" src="{{ Storage::url($user->picture) }}"
+                                                width="40" class="rounded-circle" onmouseover="zoomIn(this)"
+                                                onmouseout="zoomOut(this)">
+                                        </div>
+                                        @else
+                                        <div class="image-container">
+                                            <img style="margin-right: 10px;"
+                                                src="https://ui-avatars.com/api/?name={{ Auth::user()->nama_penanggung_jawab }}"
+                                                width="40" class="rounded-circle" onmouseover="zoomIn(this)"
+                                                onmouseout="zoomOut(this)">
+                                        </div>
+                                        @endif
+                                    </td>
+                                    <td>{{ $penggunas->nip_oprator }}</td>
                                     <td>{{ $penggunas->nama_penanggung_jawab }}</td>
                                     <td>{{ $penggunas->name }}</td>
                                     <td>{{ $penggunas->email }}</td>
@@ -248,7 +284,11 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Tugas Oprator {{ $value->nama_penanggung_jawab }}</label>
-                        <p class="fw-bold">Edit</p>
+                        <p class="fw-bold">
+                            User ini {{ $value->permission_edit == 1 ? 'memiliki akses edit' : 'tidak memiliki akses
+                            edit ' }}<br>
+                            Apakah anda ingin mengubahnya ?
+                        </p>
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="radio" value="1" name="permission_edit"
                                 id="radioExample1" />
@@ -263,7 +303,11 @@
                                 Tidak
                             </label>
                         </div>
-                        <p class="fw-bold">Hapus</p>
+                        <p class="fw-bold">
+                            User ini {{ $value->permission_delete == 1 ? 'memiliki akses delete' : 'tidak memiliki akses
+                            delete ' }} <br>
+                            Apakah anda ingin mengubahnya ?
+                        </p>
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="radio" value="1" name="permission_delete"
                                 id="radioExample1" />
@@ -278,7 +322,11 @@
                                 Tidak
                             </label>
                         </div>
-                        <p class="fw-bold">Upload</p>
+                        <p class="fw-bold">
+                            User ini {{ $value->permission_upload == 1 ? 'memiliki akses upload' : 'tidak memiliki akses
+                            upload ' }} <br>
+                            Apakah anda ingin mengubahnya ?
+                        </p>>
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="radio" value="1" name="permission_upload"
                                 id="radioExample1" />
@@ -293,7 +341,11 @@
                                 Tidak
                             </label>
                         </div>
-                        <p class="fw-bold">Update</p>
+                        <p class="fw-bold">
+                            User ini {{ $value->permission_create == 1 ? 'memiliki akses create' : 'tidak memiliki akses
+                            create ' }} <br>
+                            Apakah anda ingin mengubahnya ?
+                        </p>
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="radio" value="1" name="permission_create"
                                 id="radioExample1" />
@@ -308,7 +360,12 @@
                                 Tidak
                             </label>
                         </div>
-                        <p class="fw-bold">Download</p>
+                        <p class="fw-bold">
+                            User ini {{ $value->permission_download == 1 ? 'memiliki akses download' : 'tidak memiliki
+                            akses
+                            download ' }} <br>
+                            Apakah anda ingin mengubahnya ?
+                        </p>
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="radio" value="1" name="permission_download"
                                 id="radioExample1" />
@@ -338,6 +395,15 @@
 @endsection
 
 @push('js')
+<script>
+    function zoomIn(image) {
+        image.style.transform = "scale(1.3)";
+    }
+
+    function zoomOut(image) {
+        image.style.transform = "scale(1)";
+    }
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var userRoleSelect = document.getElementById('userRole');

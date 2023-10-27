@@ -274,18 +274,24 @@ class UploadFileController extends Controller
         foreach ($logAtivitas as $log) {
             $usersAtivitas[] = [
                 'name' => $log->Users->nama_penanggung_jawab,
+                'nip_operator' => $log->Users->nip_oprator,
+                'date' => $log->created_at
             ];
         }
 
         foreach ($logEdit as $log) {
             $usersLogEdit[] = [
-                'name' => $log->Users->nama_penanggung_jawab
+                'name' => $log->Users->nama_penanggung_jawab,
+                'nip_operator' => $log->Users->nip_oprator,
+                'date' => $log->created_at
             ];
         }
 
         foreach ($logDownload as $log) {
             $usersDownload[] = [
                 'name' => $log->Users->nama_penanggung_jawab,
+                'nip_operator' => $log->Users->nip_oprator,
+                'date' => $log->created_at
             ];
         }
 
@@ -313,7 +319,7 @@ class UploadFileController extends Controller
 
         return response()->json([
             'message' => 'Datacenter Log Download successfuly',
-            'data' => $log
+            'data' => $file
         ]);
     }
 }

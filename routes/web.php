@@ -21,6 +21,7 @@ Route::get('register', function () {
 });
 
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/dataset', [HomeController::class, 'dataset'])->name('dataset');
 
 // Route untuk super admin
 Route::post('/tambah-pengguna', [TambahPenggunaController::class, 'getStorePengguna'])->name('get.Tambah.Pengguna');

@@ -42,7 +42,7 @@
                                     <th scope="col">No</th>
                                     <th scope="col">Judul</th>
                                     <th scope="col">Tanggal</th>
-                                    <th scope="col">Keterangan</th>
+                                    <th scope="col">File</th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
@@ -52,7 +52,28 @@
                                     <td>{{ $key+1 }}</td>
                                     <td>{{ $datas->judul }}</td>
                                     <td>{{ date('d F Y', strtotime($datas->tannggal)) }}</td>
-                                    <td>{{ $datas->keterangan }}</td>
+                                    <td>
+                                        @php
+                                        $extension = pathinfo($datas->file, PATHINFO_EXTENSION);
+                                        $iconClass = '';
+                                        switch ($extension) {
+                                        case 'pdf':
+                                        $iconClass = 'ri-file-pdf-fill';
+                                        break;
+                                        case 'docs':
+                                        $iconClass = 'ri-file-word-fill';
+                                        break;
+                                        default:
+                                        $iconClass = 'ri-file-fill';
+                                        break;
+                                        }
+                                        @endphp
+                                        <a
+                                            href="https://docs.google.com/gview?embedded=true&url=https://data-canter.taekwondosulsel.info/storage/{{ $datas->file }}">
+                                            <i style="font-size: 30px;" class="{{ $iconClass }}"></i>
+                                            {{ $datas->file }}
+                                        </a>
+                                    </td>
                                     <td>
                                         <div class="iq-card-header-toolbar d-flex align-items-center">
                                             <div class="dropdown">
@@ -118,14 +139,16 @@
                             placeholder="Silahkan buat folder">
                     </div>
                     <div class="form-group">
-                        <label for="keterangan" class="col-form-label">Keterangan</label>
-                        <textarea name="keterangan" id="alamat_pelapor" cols="100%" rows="2"
-                            class="form-control">{{ $item->keterangan }}</textarea>
+                        <label for="file" class="col-form-label">File</label>
+                        <input type="file" name="file" accept=".pdf,.doc,.docx" class="form-control" id="file"
+                            aria-describedby="emailHelp" placeholder="Silahkan buat folder">
+                        {{-- <div id="file-preview" style="display: none;">
+                        </div> --}}
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary" id="btn-buat">Buat</button>
+                    <button type="submit" class="btn btn-primary" id="btn-buat">Simpan</button>
                 </div>
             </form>
         </div>
@@ -153,13 +176,15 @@
                     </div>
                     <div class="form-group">
                         <label for="tanggal" class="col-form-label">Tanggal</label>
-                        <input type="date" name="tannggal" class="form-control" id="tanggal"
+                        <input type="date" name="tannggal" class="form-control" id="tannggal"
                             aria-describedby="emailHelp" placeholder="Silahkan buat folder">
                     </div>
                     <div class="form-group">
-                        <label for="keterangan" class="col-form-label">Keterangan</label>
-                        <textarea name="keterangan" id="alamat_pelapor" cols="100%" rows="2"
-                            class="form-control"></textarea>
+                        <label for="file" class="col-form-label">File</label>
+                        <input type="file" name="file" accept=".pdf,.doc,.docx" class="form-control" id="file"
+                            aria-describedby="emailHelp" placeholder="Silahkan buat folder">
+                        {{-- <div id="file-preview" style="display: none;">
+                        </div> --}}
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -174,6 +199,23 @@
 @endsection
 
 @push('js')
+{{-- <script>
+    document.getElementById('file').addEventListener('change', function (event) {
+        const fileInput = event.target;
+        const file = fileInput.files[0];
+
+        if (file) {
+            const fileType = file.name.split('.').pop().toLowerCase();
+            if (fileType === 'pdf' || fileType === 'doc' || fileType === 'docx') {
+                const filePreview = document.getElementById('file-preview');
+                filePreview.innerHTML = `File terpilih: ${file.name}`;
+                filePreview.style.display = 'block';
+            } else {
+                document.getElementById('file-preview').style.display = 'none';
+            }
+        }
+    });
+</script> --}}
 <script>
     $(document).ready(function () {
         $('.delete-button').click(function () {
@@ -192,7 +234,7 @@
         });
     });
 </script>
-<script>
+{{-- <script>
     $(document).ready(function () {
         $('#exampleModalCenter form').submit(function (event) {
             event.preventDefault();
@@ -219,7 +261,7 @@
             $('#exampleModalCenter form').unbind('submit').submit();
         });
     });
-</script>
+</script> --}}
 <script>
     const chatIcon = document.getElementById('chat-icon');
     const notificationsDropdown = document.getElementById('notifications-dropdown');

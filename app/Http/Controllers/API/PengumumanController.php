@@ -10,8 +10,18 @@ class PengumumanController extends Controller
 {
     public function getIndexPengmumumann()
     {
-        $pengumuman = Pengumuman::orderBy('created_at', 'desc')->get();
+        $pengumuman = Pengumuman::orderBy('created_at', 'desc')->first();
 
-        return response()->json($pengumuman);
+        $responseData = [
+            'id' => $pengumuman->id,
+            'judul' => $pengumuman->judul,
+            'file' => $pengumuman->file,
+            'tanggal' => $pengumuman->tannggal,
+            'users' => $pengumuman->Users,
+        ];
+        return response()->json([
+            'success' => "Berhasil",
+            'data' => $responseData
+        ]);
     }
 }

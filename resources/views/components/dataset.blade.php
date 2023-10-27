@@ -2,15 +2,110 @@
 
 @section('content')
 
+@push('css')
+<style>
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 999;
+        width: 100vw;
+        height: 100vh;
+        background-color: #000;
+        opacity: 0.5;
+    }
+
+    .announcement {
+        position: absolute;
+        top: 50%;
+        /* Pusatkan vertikal */
+        left: 50%;
+        /* Pusatkan horizontal */
+        transform: translate(-50%, -50%);
+        /* Pusatkan elemen ke tengah */
+        z-index: 1000;
+        /* Beri z-index yang lebih tinggi dari overlay jika perlu */
+        width: 60vw;
+        height: max-content;
+        padding: 10px;
+        border-radius: 10px
+    }
+
+    .announcement .title {
+        font-size: 30px;
+    }
+
+    .announcement .badge {
+        font-size: 12px;
+    }
+
+    .announcement .card-body {
+        position: relative;
+        height: fit-content;
+    }
+
+    .owl-stage-outer {
+        height: fit-content;
+        overflow: hidden;
+    }
+
+    .owl-stage {
+        display: flex;
+        flex-direction: row;
+        overflow: hidden;
+    }
+
+    .owl-nav {
+        display: none
+    }
+
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+</style>
+@endpush
+
 @if (session('status'))
 <script>
     Swal.fire({
-        icon: 'success',
-        title: 'Sukses!',
-        text : "{{ session('status') }}",
-    });
+                icon: 'success',
+                title: 'Sukses!',
+                text: "{{ session('status') }}",
+            });
 </script>
 @endif
+
+@php
+if (!session('announcement')) {
+$twoDaysAgo = now()->subDays(2);
+$pengumuman = \App\Models\Pengumuman::where('created_at', '>=', $twoDaysAgo)
+->orderBy('created_at', 'desc')
+->get();
+echo '<div class="overlay">
+    <div class="announcement card">
+        <div class="card-body">
+            <button class="close">X</button>
+            <div class="owl-carouselss owl-theme">';
+                foreach ($pengumuman as $announcement) {
+                echo'<div class="item">
+                    <div class="title">'. $announcement->judul . '</div>
+                    <span class="badge badge-secondary">' .
+                        date('d F Y', strtotime($announcement->tannggal)) . '</span> Diposting oleh : <i
+                        style="font-size: 15px;">'. $announcement->Users->name .'</i>
+                    <div class="desc">
+                        ' . $announcement->keterangan . '
+                    </div>
+                </div>';
+                }
+                echo'</div>
+        </div>
+    </div>
+</div>';
+session(['announcement' => true]);
+}
+@endphp
 
 <div class="container-fluid">
     <div class="row">
@@ -18,7 +113,7 @@
             <div class="iq-card">
                 <div class="iq-card-header d-flex justify-content-between">
                     <div class="iq-header-title">
-                        <h4 class="card-title">{{ $details->folder_name }}</h4>
+                        <h4 class="card-title">Daftar Data Center</h4>
                     </div>
                     <div class="iq-card-header-toolbar d-flex align-items-center">
                         <div class="dropdown">
@@ -61,7 +156,7 @@
                                 <tr>
                                     <th scope="col">Nama</th>
                                     @if (Auth::user()->roles == 'super_admin')
-                                    <th scope="col">Aktivasi Pengguna</th>
+                                    <th scope="col">Nama Penanggung Jawab</th>
                                     @endif
                                     <th scope="col">Tanggal</th>
                                     <th scope="col"></th>
@@ -72,7 +167,7 @@
                                 $filesWithoutFolder = [];
                                 $filesWithFolder = [];
 
-                                foreach ($folder as $datas) {
+                                foreach ($data as $datas) {
                                 if (strpos($datas->folder_name, 'folder-file/') === 0) {
                                 $filesWithFolder[] = $datas;
                                 } else {
@@ -89,10 +184,15 @@
                                             $datas->folder_name }}
                                         </a>
                                     </td>
+                                    @if (Auth::check())
                                     @if (Auth::user()->roles == 'super_admin')
-                                    <td>{{ $datas->Users->name }}</td>
+                                    <td>{{ $datas->Users->nama_penanggung_jawab }}</td>
                                     @endif
-                                    <td>{{ date('d F Y', strtotime($datas->tanggal)) }}</td>
+                                    @endif
+                                    <td>
+                                        {{ date('d F Y', strtotime($datas->tanggal)) }},
+                                        <i>{{ $datas->created_at->diffForHumans() }}</i>
+                                    </td>
                                     <td>
                                         <div class="iq-card-header-toolbar d-flex align-items-center">
                                             <div class="dropdown">
@@ -137,7 +237,8 @@
                                                                 style="font-size: 25px;"
                                                                 class="ri-delete-bin-6-fill mr-2"></i>Pindahkan ke
                                                             sampah</button>
-                                                    </form @elseif (Auth::user()->permission_edit)
+                                                    </form>
+                                                    @elseif (Auth::user()->permission_edit)
                                                     <a class="dropdown-item" data-toggle="modal"
                                                         data-target="#editModal{{ $datas->id }}"><i
                                                             style="font-size: 25px;"
@@ -350,16 +451,21 @@
                                         }
                                         @endphp
                                         <a target="_blank"
-                                            href="https://docs.google.com/gview?embedded=true&url=https://data-canter.taekwondosulsel.info/storage/{{ $datas->folder_name }}">
+                                            href="https://docs.google.com/viewer?url=https://data-canter.taekwondosulsel.info/storage/{{    ($datas->folder_name) }}">
                                             <i style="font-size: 30px;" class="{{ $iconClass }}"></i> {{
                                             substr($datas->folder_name, 12) }}
                                         </a>
                                         @endif
                                     </td>
+                                    @if (Auth::check())
                                     @if (Auth::user()->roles == 'super_admin')
-                                    <td>{{ $datas->Users->name }}</td>
+                                    <td>{{ $datas->Users->nama_penanggung_jawab }}</td>
                                     @endif
-                                    <td>{{ date('d F Y', strtotime($datas->tanggal)) }}</td>
+                                    @endif
+                                    <td>
+                                        {{ $datas->created_at->format('d F Y') }},
+                                        <i>{{ $datas->created_at->diffForHumans() }}</i>
+                                    </td>
                                     <td>
                                         <div class="iq-card-header-toolbar d-flex align-items-center">
                                             <div class="dropdown">
@@ -370,8 +476,9 @@
                                                 <div class="dropdown-menu dropdown-menu-right"
                                                     aria-labelledby="dropdownMenuButton5">
                                                     @if (Auth::user()->roles == 'super_admin')
-                                                    <a class="dropdown-item" href="storage/{{ $datas->folder_name }}"
-                                                        download><i style="font-size: 25px;"
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('recordActivity', $datas->id) }}"><i
+                                                            style="font-size: 25px;"
                                                             class="ri-file-download-fill mr-2"></i>Download</a>
                                                     <hr>
                                                     <a class="dropdown-item" data-toggle="modal"
@@ -406,8 +513,8 @@
                                                     </form>
                                                     @elseif (Auth::user()->permission_download)
                                                     <a class="dropdown-item"
-                                                        href="{{ route('recordActivity', $datas->id) }}"><i
-                                                            style="font-size: 25px;"
+                                                        href="{{ route('recordActivity', $datas->id) }}">
+                                                        <i style="font-size: 25px;"
                                                             class="ri-file-download-fill mr-2"></i>Download</a>
                                                     @elseif (Auth::user()->permission_delete)
                                                     <form action="{{ route('put.Update.Status', $datas->id) }}"
@@ -476,25 +583,6 @@
     </div>
 </div>
 
-@foreach ( $folder as $datas )
-<div class="modal fade" id="myModal-{{ $datas->id }}" tabindex="-1" role="dialog"
-    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">File Foto</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <img src="{{ asset('storage/'. $datas->folder_name) }}" alt="Gambar Besar" class="img-fluid">
-            </div>
-        </div>
-    </div>
-</div>
-@endforeach
-
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -505,13 +593,9 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('post.Dalam.Folder') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('post.Folder') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
-                    <div class="form-group">
-                        <input type="hidden" name="parent_name_id" class="form-control" id="exampleInputEmail1"
-                            aria-describedby="emailHelp" placeholder="Silahkan buat folder" value="{{ $details->id }}">
-                    </div>
                     <div class="form-group">
                         <input type="text" name="folder_name" class="form-control" id="exampleInputEmail1"
                             aria-describedby="emailHelp" placeholder="Silahkan buat folder">
@@ -536,15 +620,12 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('post.Dalam.Folder.File') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('post.File') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
-                        <input type="hidden" name="parent_name_id" value="{{ $details->id }}"
-                            class="form-control-file"><br>
-                    </div>
-                    <div class="form-group">
-                        <input type="file" name="folder_name" class="form-control-file"><br>
+                        <input type="file" name="folder_name" class="form-control-file" id="fileInput"
+                            aria-describedby="fileHelp"><br>
                         <div id="previewContainer"></div>
                     </div>
                 </div>
@@ -605,6 +686,7 @@
 @endsection
 
 @push('js')
+
 <script>
     const userRoleSelect = document.getElementById('userRole');
         const additionalFieldsDiv = document.getElementById('additionalFields');
@@ -727,106 +809,4 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
 </script>
-{{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
-</script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('#fileUploadForm').on('submit', function (e) {
-            e.preventDefault();
-
-            var formData = new FormData($(this)[0]);
-
-            $.ajax({
-                url: "{{ route('post.File') }}",
-                type: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                xhr: function () {
-                    var xhr = new window.XMLHttpRequest();
-
-                    xhr.upload.addEventListener("progress", function (evt) {
-                        if (evt.lengthComputable) {
-                            var percentComplete = (evt.loaded / evt.total) * 100;
-                            $('.progress').show();
-                            $('.progress-bar').width(percentComplete + '%');
-                            $('.progress-percent').text(percentComplete.toFixed(2) + '%');
-                        }
-                    }, false);
-
-                    return xhr;
-                },
-                success: function (response) {
-                    location.reload();
-                },
-                error: function (error) {
-                    alert('Data Invalid');
-                }
-            });
-        });
-    });
-</script>
-<script>
-    const userRoleSelect = document.getElementById('userRole');
-    const additionalFieldsDiv = document.getElementById('additionalFields');
-    const userEmailInput = document.getElementById('userEmail');
-    const userRolesInput = document.getElementById('userRoles');
-    const userPasswordInput = document.getElementById('userPassword');
-
-    userRoleSelect.addEventListener('change', function() {
-        if (userRoleSelect.value === 'Admin bidang/upt') {
-            additionalFieldsDiv.style.display = 'block';
-            userEmailInput.value = 'bidang/upt@gmail.com';
-            userRolesInput.value = 'bidang_upt';
-            userPasswordInput.value = '12345678';
-        } else if (userRoleSelect.value === 'Admin seksi') {
-            additionalFieldsDiv.style.display = 'block';
-            userEmailInput.value = 'seksi@gmail.com';
-            userRolesInput.value = 'seksi';
-            userPasswordInput.value = '12345678';
-        } else if (userRoleSelect.value === 'Admin staff') {
-            additionalFieldsDiv.style.display = 'block';
-            userEmailInput.value = 'staff@gmail.com';
-            userRolesInput.value = 'staff';
-            userPasswordInput.value = '12345678';
-        } else {
-            additionalFieldsDiv.style.display = 'none';
-        }
-    });
-</script>
-<script>
-    const fileInput = document.getElementById('fileInput');
-    const previewContainer = document.getElementById('previewContainer');
-
-    fileInput.addEventListener('change', function() {
-        previewContainer.innerHTML = '';
-
-        const files = fileInput.files;
-
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                const preview = document.createElement('img');
-                preview.src = e.target.result;
-                preview.style.maxWidth = '100%';
-                preview.style.height = 'auto';
-                previewContainer.appendChild(preview);
-            }
-
-            reader.readAsDataURL(file);
-        }
-    });
-</script>
-<script>
-    const chatIcon = document.getElementById('chat-icon');
-    const notificationsDropdown = document.getElementById('notifications-dropdown');
-
-    chatIcon.addEventListener('click', () => {
-        notificationsDropdown.classList.toggle('show-dropdown');
-    });
-</script> --}}
 @endpush
